@@ -1,5 +1,5 @@
-name: template
-description: "Support for Android, iOS, Web"
+name: flutter_kimchi_run
+description: "A mobile game built with Flutter and Unity WebGL, using game content from a YouTube tutorial by Nicolas from Nomad Coders."
 
 publish_to: 'none'
 
@@ -14,56 +14,55 @@ dependencies:
 
   # State Management
   flutter_riverpod:
-  riverpod_annotation:
 
   # Routing
   go_router:
 
-  # HTTP & Network
-  dio:
-  retrofit:
-  talker_dio_logger:
-
-  # Serialization & Modeling
+  # Data & Serialization
   json_annotation:
   freezed_annotation:
-  freezed:
 
-  # Assets
-  flutter_svg:
+  # Firebase
+  firebase_core:
+  firebase_auth:
+  firebase_storage:
+  cloud_firestore:
+  firebase_crashlytics:
+  firebase_analytics:
 
-  # Debounce / Throttle
+  ## Debounce & Throttle
   easy_debounce:
-  debounce_throttle:
 
-  # Hash
+  ## Security
   crypto:
 
-  # UI DSL
-  flutter_dsl:
+  ## Image
+  flutter_svg:
+  image_picker:
+  cached_network_image:
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-
-  # Linting
-  flutter_lints: ^5.0.0
-  riverpod_lint:
-  custom_lint:
 
   # Code Generation
   build_runner:
   retrofit_generator:
   riverpod_generator:
   json_serializable:
+  freezed:
+  flutter_gen_runner:
+  custom_lint_builder:
   analyzer:
   analyzer_plugin:
-  custom_lint_builder:
-  flutter_gen_runner:
+
+  # Linting
+  flutter_lints:
+  riverpod_lint:
+  custom_lint:
 
 flutter:
   uses-material-design: true
-
   fonts:
     - family: Pretendard
       fonts:
@@ -86,8 +85,6 @@ flutter:
         - asset: assets/fonts/Pretendard-Thin.otf
           weight: 100
   assets:
-    - assets/images/
-    - assets/icons/
     - assets/fonts/
 
 flutter_gen:
@@ -103,3 +100,4 @@ flutter_gen:
     enabled: true
     inputs:
       - assets/color/colors.xml
+
