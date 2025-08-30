@@ -1,7 +1,34 @@
-import 'package:flutter/material.dart';
+import 'dart:ui';
+import 'dart:async';
 
-void main() {
-  runApp(const MyApp());
+import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+
+import 'firebase_options.dart';
+
+void main() async {
+  FlutterError.onError = (errorDetails) {
+    FirebaseCrashlytics.instance.recordFlutterFatalError(errorDetails);
+  };
+
+  PlatformDispatcher.instance.onError = (error, stack) {
+    FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
+    return true;
+  };
+
+  runZonedGuarded(
+        () async {
+      WidgetsFlutterBinding.ensureInitialized();
+
+      await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
+      runApp(const MyApp());
+    },
+        (error, stack) {
+      FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
+    },
+  );
 }
 
 class MyApp extends StatelessWidget {
