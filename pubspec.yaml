@@ -1,0 +1,105 @@
+name: template
+description: "Support for Android, iOS, Web"
+
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.8.1
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # State Management
+  flutter_riverpod:
+  riverpod_annotation:
+
+  # Routing
+  go_router:
+
+  # HTTP & Network
+  dio:
+  retrofit:
+  talker_dio_logger:
+
+  # Serialization & Modeling
+  json_annotation:
+  freezed_annotation:
+  freezed:
+
+  # Assets
+  flutter_svg:
+
+  # Debounce / Throttle
+  easy_debounce:
+  debounce_throttle:
+
+  # Hash
+  crypto:
+
+  # UI DSL
+  flutter_dsl:
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  # Linting
+  flutter_lints: ^5.0.0
+  riverpod_lint:
+  custom_lint:
+
+  # Code Generation
+  build_runner:
+  retrofit_generator:
+  riverpod_generator:
+  json_serializable:
+  analyzer:
+  analyzer_plugin:
+  custom_lint_builder:
+  flutter_gen_runner:
+
+flutter:
+  uses-material-design: true
+
+  fonts:
+    - family: Pretendard
+      fonts:
+        - asset: assets/fonts/Pretendard-Black.otf
+          weight: 900
+        - asset: assets/fonts/Pretendard-ExtraBold.otf
+          weight: 800
+        - asset: assets/fonts/Pretendard-Bold.otf
+          weight: 700
+        - asset: assets/fonts/Pretendard-SemiBold.otf
+          weight: 600
+        - asset: assets/fonts/Pretendard-Medium.otf
+          weight: 500
+        - asset: assets/fonts/Pretendard-Regular.otf
+          weight: 400
+        - asset: assets/fonts/Pretendard-Light.otf
+          weight: 300
+        - asset: assets/fonts/Pretendard-ExtraLight.otf
+          weight: 200
+        - asset: assets/fonts/Pretendard-Thin.otf
+          weight: 100
+  assets:
+    - assets/images/
+    - assets/icons/
+    - assets/fonts/
+
+flutter_gen:
+  output: lib/gen/
+  integrations:
+    image: true
+    flutter_svg: true
+  assets:
+    enabled: true
+  fonts:
+    enabled: true
+  colors:
+    enabled: true
+    inputs:
+      - assets/color/colors.xml
