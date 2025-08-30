@@ -1,0 +1,50 @@
+<resources>
+    <!-- Blue -->
+    <color name="blue50">#E3F2FD</color>
+    <color name="blue100">#BBDEFB</color>
+    <color name="blue200">#90CAF9</color>
+    <color name="blue300">#64B5F6</color>
+    <color name="blue400">#42A5F5</color>
+    <color name="blue500">#2196F3</color>
+    <color name="blue600">#1E88E5</color>
+    <color name="blue700">#1976D2</color>
+    <color name="blue800">#1565C0</color>
+    <color name="blue900">#0D47A1</color>
+
+    <!-- Yellow -->
+    <color name="yellow100">#FFF9C4</color>
+    <color name="yellow300">#FFF176</color>
+    <color name="yellow500">#FFEB3B</color>
+    <color name="yellow700">#FBC02D</color>
+    <color name="yellow900">#F57F17</color>
+
+    <!-- Red -->
+    <color name="red100">#FFCDD2</color>
+    <color name="red300">#E57373</color>
+    <color name="red500">#F44336</color>
+    <color name="red700">#D32F2F</color>
+    <color name="red900">#B71C1C</color>
+
+    <!-- Green -->
+    <color name="green100">#C8E6C9</color>
+    <color name="green300">#81C784</color>
+    <color name="green500">#4CAF50</color>
+    <color name="green700">#388E3C</color>
+    <color name="green900">#1B5E20</color>
+
+    <!-- Gray -->
+    <color name="gray50">#FAFAFA</color>
+    <color name="gray100">#F5F5F5</color>
+    <color name="gray200">#EEEEEE</color>
+    <color name="gray300">#E0E0E0</color>
+    <color name="gray400">#BDBDBD</color>
+    <color name="gray500">#9E9E9E</color>
+    <color name="gray600">#757575</color>
+    <color name="gray700">#616161</color>
+    <color name="gray800">#424242</color>
+    <color name="gray900">#212121</color>
+
+    <!-- White / Black -->
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+</resources>
