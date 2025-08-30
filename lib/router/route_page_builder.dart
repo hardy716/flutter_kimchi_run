@@ -8,10 +8,10 @@ import '../modules/profile/profile.dart' show ProfileScreen;
 import 'route_paths.dart';
 
 final Map<AppRoute, Page<dynamic> Function(BuildContext, GoRouterState)> routeBuilders = {
-  AppRoute.splash: (context, state) => _buildPage(context: context, state: state, child: SplashScreen()),
-  AppRoute.login: (context, state) => _buildPage(context: context, state: state, child: LoginScreen()),
-  AppRoute.profile: (context, state) => _buildPage(context: context, state: state, child: ProfileScreen()),
-  AppRoute.error: (context, state) => _buildPage(context: context, state: state, child: ErrorScreen()),
+  AppRoute.splash: (context, state) => _buildPage(context: context, state: state, child: const SplashScreen()),
+  AppRoute.login: (context, state) => _buildPage(context: context, state: state, child: const LoginScreen()),
+  AppRoute.profile: (context, state) => _buildPage(context: context, state: state, child: const ProfileScreen()),
+  AppRoute.error: (context, state) => _buildPage(context: context, state: state, child: const ErrorScreen()),
 };
 
 CustomTransitionPage<dynamic> _buildPage({
@@ -36,6 +36,6 @@ extension AppRouteBuilder on AppRoute {
     final builder = routeBuilders[this];
     if (builder != null) return builder;
 
-    return (context, state) => _buildPage(context: context, state: state, child: ErrorScreen());
+    return (context, state) => _buildPage(context: context, state: state, child: const ErrorScreen());
   }
 }
