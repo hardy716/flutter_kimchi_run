@@ -1,6 +1,7 @@
 enum AppRoute {
   splash('/', 'splash'),
   login('/login', 'login'),
+  game('/game', 'game'),
   profile('/profile', 'profile'),
   error('/error', 'error');
 

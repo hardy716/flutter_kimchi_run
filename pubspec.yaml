@@ -42,6 +42,9 @@ dependencies:
   image_picker:
   cached_network_image:
 
+  ## WebView
+  flutter_inappwebview:
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
