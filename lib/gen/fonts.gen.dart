@@ -11,6 +11,6 @@
 class FontFamily {
   FontFamily._();
 
-  /// Font family: Pretendard
-  static const String pretendard = 'Pretendard';
+  /// Font family: Jersey25
+  static const String jersey25 = 'Jersey25';
 }
