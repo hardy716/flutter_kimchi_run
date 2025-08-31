@@ -5,9 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_kimchi_run/router/app_router.dart';
+import 'package:flutter_kimchi_run/shared/view/widgets/background_scaffold.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'firebase_options.dart';
 import 'gen/assets.gen.dart';
+import 'firebase_options.dart';
 
 Future<void> main() async {
   runZonedGuarded(
@@ -28,7 +31,7 @@ Future<void> main() async {
       // 앱 화면 방향 가로 모드로 고정
       await SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft, DeviceOrientation.landscapeRight]);
 
-      runApp(const MyApp());
+      runApp(const ProviderScope(child: App()));
     },
     (error, stack) {
       FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
@@ -36,20 +39,43 @@ Future<void> main() async {
   );
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class App extends ConsumerStatefulWidget {
+  const App({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(home: MyHomePage(), debugShowCheckedModeBanner: false);
-  }
+  ConsumerState<App> createState() => _MyAppState();
 }
 
-class MyHomePage extends StatelessWidget {
-  const MyHomePage({super.key});
+class _MyAppState extends ConsumerState<App> with WidgetsBindingObserver {
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    switch (state) {
+      case AppLifecycleState.detached:
+      case AppLifecycleState.inactive:
+      case AppLifecycleState.hidden:
+      case AppLifecycleState.paused:
+      case AppLifecycleState.resumed:
+        break;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Material(child: Assets.images.bgSky320x1803x.image(fit: BoxFit.cover));
+    return MaterialApp.router(routerConfig: ref.watch(appRouterProvider), debugShowCheckedModeBanner: false);
   }
 }

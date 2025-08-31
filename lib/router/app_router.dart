@@ -16,7 +16,7 @@ GoRouter appRouter(Ref ref) {
 
   final router = GoRouter(
     navigatorKey: navigatorKey,
-    initialLocation: AppRoute.login.path,
+    initialLocation: AppRoute.splash.path,
     // refreshListenable: ,
     // redirect: ,
     routes: [
