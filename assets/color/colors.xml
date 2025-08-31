@@ -16,4 +16,6 @@
 
     <color name="yellow_gold_100">#FEC526</color>
     <color name="orange_vibrant_100">#FC941A</color>
+
+    <color name="red500">#F44336</color>
 </resources>

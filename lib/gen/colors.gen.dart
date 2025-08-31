@@ -44,6 +44,9 @@ class ColorName {
   /// Color: #FC941A
   static const Color orangeVibrant100 = Color(0xFFFC941A);
 
+  /// Color: #F44336
+  static const Color red500 = Color(0xFFF44336);
+
   /// Color: #3591BC
   static const Color skyBlue100 = Color(0xFF3591BC);
 
