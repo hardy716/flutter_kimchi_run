@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_kimchi_run/core/theme/app/app_texts.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../../shared/shared.dart';
-import '../game_provider.dart';
+import '../../../../../core/theme/app/app_texts.dart';
 import '../widgets/game_webview.dart';
+import '../game_provider.dart';
 
 class GameScreen extends ConsumerStatefulWidget {
   const GameScreen({super.key});
@@ -117,12 +116,11 @@ class _GameScreenState extends ConsumerState<GameScreen> with WidgetsBindingObse
             ],
           ),
           Padding(
-            padding: const EdgeInsets.all(10),
+            padding: const EdgeInsets.all(20),
             child: Align(
               alignment: Alignment.topRight,
               child: TextButton(
                 onPressed: () {
-                  print('hi');
                 },
                 child: const Text('RANKING ->', style: AppTexts.b3),
               ),

@@ -3,6 +3,4 @@ class AppConstants {
 
   static const int backgroundAlpha = 20;
   static const int hintTextAlpha = 50;
-
-  static const unityWebGLUrl = 'https://kimchirun.xyz';
 }

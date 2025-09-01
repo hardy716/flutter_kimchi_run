@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:crypto/crypto.dart';
 
 extension Sha256EncodingExtension on String {
@@ -14,10 +14,7 @@ extension Sha256EncodingExtension on String {
 }
 
 extension TextSpanStylingExtension on String {
-  TextSpan colored({required TextStyle baseStyle, required Color color}) {
-    return TextSpan(
-      text: this,
-      style: baseStyle.copyWith(color: color),
-    );
+  TextSpan colored({TextStyle? baseStyle, int leadingSpaces = 0, int trailingSpaces = 0}) {
+    return TextSpan(text: ' ' * leadingSpaces + this + ' ' * trailingSpaces, style: baseStyle);
   }
 }

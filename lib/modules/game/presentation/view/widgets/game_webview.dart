@@ -2,9 +2,10 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import 'package:flutter_kimchi_run/core/constants/default_constants.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../../core/theme/theme.dart';
+import '../../../../../core/constants/app_constants.dart';
 import '../game_provider.dart';
 
 class GameWebView extends ConsumerStatefulWidget {
@@ -78,7 +79,7 @@ class _GameWebViewState extends ConsumerState<GameWebView> {
     });
 
     return InAppWebView(
-      initialUrlRequest: URLRequest(url: WebUri(AppConstants.unityWebGLUrl)),
+      initialUrlRequest: URLRequest(url: WebUri(DefaultConstants.unityWebGLUrl)),
       initialSettings: InAppWebViewSettings(
         isInspectable: true,
         mediaPlaybackRequiresUserGesture: false,

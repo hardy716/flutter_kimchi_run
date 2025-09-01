@@ -16,14 +16,14 @@ GoRouter appRouter(Ref ref) {
 
   final router = GoRouter(
     navigatorKey: navigatorKey,
-    initialLocation: AppRoute.game.path,
+    initialLocation: AppRoute.ranking.path,
     // refreshListenable: ,
     // redirect: ,
     routes: [
       GoRoute(path: AppRoute.splash.path, name: AppRoute.splash.name, pageBuilder: AppRoute.splash.builder),
       GoRoute(path: AppRoute.login.path, name: AppRoute.login.name, pageBuilder: AppRoute.login.builder),
       GoRoute(path: AppRoute.game.path, name: AppRoute.game.name, pageBuilder: AppRoute.game.builder),
-      GoRoute(path: AppRoute.profile.path, name: AppRoute.profile.name, pageBuilder: AppRoute.profile.builder),
+      GoRoute(path: AppRoute.ranking.path, name: AppRoute.ranking.name, pageBuilder: AppRoute.ranking.builder),
       GoRoute(path: AppRoute.error.path, name: AppRoute.error.name, pageBuilder: AppRoute.error.builder),
     ],
     errorPageBuilder: AppRoute.error.builder,

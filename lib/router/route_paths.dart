@@ -2,7 +2,7 @@ enum AppRoute {
   splash('/', 'splash'),
   login('/login', 'login'),
   game('/game', 'game'),
-  profile('/profile', 'profile'),
+  ranking('/ranking', 'ranking'),
   error('/error', 'error');
 
   final String path;
