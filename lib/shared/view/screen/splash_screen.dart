@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../../core/theme/theme.dart';
 import '../../../../../gen/colors.gen.dart';
+import '../../../router/route_paths.dart';
 import '../widgets/background_scaffold.dart';
 
 class SplashScreen extends ConsumerStatefulWidget {
@@ -28,12 +30,9 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with SingleTickerPr
       end: 0,
     ).animate(CurvedAnimation(parent: _dropController, curve: Curves.bounceOut));
 
-    // 애니메이션이 완료되면 500ms 지연 후 동작
     _dropController.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
-        Future.delayed(const Duration(milliseconds: 500), () {
-          /// TODO: 유저 인증 상태 확인
-        });
+        context.go(AppRoute.login.path);
       }
     });
 

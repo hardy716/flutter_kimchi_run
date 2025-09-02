@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../../core/extensions/string_extension.dart';
 import '../../../../../core/constants/default_constants.dart';
 import '../../../../../core/theme/theme.dart';
 import '../../../../../gen/assets.gen.dart';
 import '../../../../../gen/colors.gen.dart';
+import '../../../../../router/route_paths.dart';
 import '../../../../../shared/shared.dart';
 
 class RankingScreen extends ConsumerStatefulWidget {
@@ -61,7 +63,7 @@ class _RankingScreenState extends ConsumerState<RankingScreen> {
       child: Align(
         alignment: Alignment.topLeft,
         child: TextButton(
-          onPressed: () {},
+          onPressed: () => context.go(AppRoute.game.path),
           child: const Text('<- BACK', style: AppTexts.b3),
         ),
       ),

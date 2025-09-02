@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../../core/theme/app/app_texts.dart';
+import '../../../../../router/route_paths.dart';
 import '../widgets/game_webview.dart';
 import '../game_provider.dart';
 
@@ -120,8 +122,7 @@ class _GameScreenState extends ConsumerState<GameScreen> with WidgetsBindingObse
             child: Align(
               alignment: Alignment.topRight,
               child: TextButton(
-                onPressed: () {
-                },
+                onPressed: () => context.go(AppRoute.ranking.path),
                 child: const Text('RANKING ->', style: AppTexts.b3),
               ),
             ),

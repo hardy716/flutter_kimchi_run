@@ -3,13 +3,11 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_kimchi_run/router/app_router.dart';
-import 'package:flutter_kimchi_run/shared/view/widgets/background_scaffold.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 
-import 'gen/assets.gen.dart';
+import 'router/app_router.dart';
 import 'firebase_options.dart';
 
 Future<void> main() async {
@@ -21,12 +19,12 @@ Future<void> main() async {
       // Firebase 초기화 및 Crashlytics 셋업
       await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
-      FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
+      // FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
 
-      PlatformDispatcher.instance.onError = (error, stack) {
-        FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
-        return true;
-      };
+      // PlatformDispatcher.instance.onError = (error, stack) {
+      //   FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
+      //   return true;
+      // };
 
       // 앱 화면 방향 가로 모드로 고정
       await SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft, DeviceOrientation.landscapeRight]);
@@ -34,7 +32,7 @@ Future<void> main() async {
       runApp(const ProviderScope(child: App()));
     },
     (error, stack) {
-      FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
+      // FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
     },
   );
 }

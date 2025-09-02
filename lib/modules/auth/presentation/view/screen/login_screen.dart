@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_kimchi_run/core/theme/app/app_paddings.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
+import '../../../../../router/route_paths.dart';
+import '../../../../../core/theme/theme.dart';
 import '../../../../../shared/shared.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
@@ -42,10 +44,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   hintText: 'nickname',
                   keyboardType: TextInputType.text,
                   controller: _nicknameTextEditingController,
-                  onSubmitted: (value) {},
+                  onSubmitted: (value) => context.go(AppRoute.game.path),
                 ),
                 const Spacer(),
-                ActionTextButton(text: 'ENTER', onTap: () {}),
+                ActionTextButton(text: 'ENTER', onTap: ()  => context.go(AppRoute.game.path)),
                 const Spacer(),
               ],
             ),
