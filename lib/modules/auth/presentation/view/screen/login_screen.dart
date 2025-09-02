@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_kimchi_run/modules/auth/presentation/view_model/auth_view_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -44,10 +45,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   hintText: 'nickname',
                   keyboardType: TextInputType.text,
                   controller: _nicknameTextEditingController,
-                  onSubmitted: (value) => context.go(AppRoute.game.path),
+                  onSubmitted: (value) => ref.auth.signInAnonymously(nickname: value),
                 ),
                 const Spacer(),
-                ActionTextButton(text: 'ENTER', onTap: ()  => context.go(AppRoute.game.path)),
+                ActionTextButton(
+                  text: 'ENTER',
+                  onTap: () => ref.auth.signInAnonymously(nickname: _nicknameTextEditingController.text),
+                ),
                 const Spacer(),
               ],
             ),

@@ -1,9 +1,11 @@
-import 'package:flutter/material.dart' show GlobalKey, NavigatorState;
+import 'package:flutter/material.dart' show GlobalKey, NavigatorState, ValueNotifier;
 
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../modules/auth/presentation/view_model/auth_view_model.dart';
+import '../modules/auth/presentation/state/auth_state.dart';
 import 'route_page_builder.dart';
 import 'route_paths.dart';
 
@@ -11,14 +13,40 @@ part 'app_router.g.dart';
 
 @riverpod
 GoRouter appRouter(Ref ref) {
-  final navigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root-navigator');
-  // final shellNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'shell-navigator');
+  final appRouteNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root-navigator');
 
+  final authValueNotifier = ValueNotifier<AsyncValue<AuthState>>(const AsyncLoading());
+
+  ref
+    ..onDispose(authValueNotifier.dispose)
+    ..listen(authViewModelProvider.select((value) => value.whenData((value) => value)), (_, next) async {
+      authValueNotifier.value = next;
+    });
   final router = GoRouter(
-    navigatorKey: navigatorKey,
+    navigatorKey: appRouteNavigatorKey,
     initialLocation: AppRoute.splash.path,
-    // refreshListenable: ,
-    // redirect: ,
+    refreshListenable: authValueNotifier,
+    redirect: (context, state) {
+      final authAsync = authValueNotifier.value;
+
+      if (authAsync.isLoading || !authAsync.hasValue) return null;
+      if (authAsync.unwrapPrevious().hasError) return AppRoute.login.path;
+
+      final authState = authAsync.requireValue;
+
+      final isLoginRoute = state.uri.path == AppRoute.login.path;
+      final isAuthenticated = authState is AuthSuccess;
+
+      if (isLoginRoute && isAuthenticated) {
+        return AppRoute.game.path;
+      }
+
+      if (authState is AuthIdle && !isAuthenticated) {
+        return AppRoute.login.path;
+      }
+
+      return null;
+    },
     routes: [
       GoRoute(path: AppRoute.splash.path, name: AppRoute.splash.name, pageBuilder: AppRoute.splash.builder),
       GoRoute(path: AppRoute.login.path, name: AppRoute.login.name, pageBuilder: AppRoute.login.builder),

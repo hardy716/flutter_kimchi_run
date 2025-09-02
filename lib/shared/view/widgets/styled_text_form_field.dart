@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../../../core/constants/app_constants.dart';
 import '../../../core/theme/theme.dart';
@@ -58,6 +59,9 @@ class _StyledTextFormFieldState extends State<StyledTextFormField> {
         textInputAction: widget.textInputAction,
         textAlign: widget.textAlign,
         onFieldSubmitted: widget.onSubmitted,
+        inputFormatters: [
+          FilteringTextInputFormatter.allow(RegExp(r'[A-Za-z0-9]')),
+        ],
         decoration: InputDecoration(
           hintText: widget.hintText,
           hintStyle: widget.hintStyle.copyWith(color: ColorName.black70.withAlpha(AppConstants.hintTextAlpha)),
