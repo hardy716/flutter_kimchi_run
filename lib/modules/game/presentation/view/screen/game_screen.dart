@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-
 import '../../../../../core/theme/app/app_texts.dart';
+
 import '../../../../../router/route_paths.dart';
+import '../../../../ranking/presentation/view_model/ranking_view_model.dart';
 import '../../../../auth/presentation/view_model/auth_view_model.dart';
 import '../widgets/game_webview.dart';
 import '../game_provider.dart';
@@ -130,7 +131,12 @@ class _GameScreenState extends ConsumerState<GameScreen> with WidgetsBindingObse
                     child: const Text('<- NICKNAME', style: AppTexts.b3),
                   ),
                   TextButton(
-                    onPressed: () => context.go(AppRoute.ranking.path),
+                    onPressed: () async {
+                      context.go(AppRoute.ranking.path);
+                      await ref.ranking.fetchRankingUser();
+                      await ref.ranking.fetchTop100RankingUser();
+                      await ref.ranking.fetchCurrentRanking();
+                    },
                     child: const Text('RANKING ->', style: AppTexts.b3),
                   ),
                 ],

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart' show GlobalKey, NavigatorState, ValueNotifier;
+import 'package:flutter_kimchi_run/modules/ranking/presentation/view_model/ranking_view_model.dart';
 
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -27,6 +28,10 @@ GoRouter appRouter(Ref ref) {
     initialLocation: AppRoute.splash.path,
     refreshListenable: authValueNotifier,
     redirect: (context, state) {
+      if (state.uri.path == AppRoute.splash.path) {
+        ref.read(rankingViewModelProvider.notifier).fetchRankingUser();
+      }
+
       final authAsync = authValueNotifier.value;
 
       if (authAsync.isLoading || !authAsync.hasValue) return null;

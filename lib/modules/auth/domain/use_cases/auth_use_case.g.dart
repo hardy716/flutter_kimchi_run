@@ -65,7 +65,7 @@ final getSignOutUseCaseProvider =
 // ignore: unused_element
 typedef GetSignOutUseCaseRef = AutoDisposeProviderRef<GetSignOutUseCase>;
 String _$getUpdateNicknameUseCaseHash() =>
-    r'c13ab280cc0f1560cc22c22c03339bbae6ca48de';
+    r'1444e3a3fd8ec313f3fb78c6f31901e1e97fbbfc';
 
 /// See also [getUpdateNicknameUseCase].
 @ProviderFor(getUpdateNicknameUseCase)

@@ -9,6 +9,8 @@ import '../../../../../gen/assets.gen.dart';
 import '../../../../../gen/colors.gen.dart';
 import '../../../../../router/route_paths.dart';
 import '../../../../../shared/shared.dart';
+import '../../../domain/entity/ranking_user_entity.dart';
+import '../../state/ranking_state_helper.dart';
 
 class RankingScreen extends ConsumerStatefulWidget {
   const RankingScreen({super.key});
@@ -17,7 +19,7 @@ class RankingScreen extends ConsumerStatefulWidget {
   ConsumerState<RankingScreen> createState() => _RankingScreenState();
 }
 
-class _RankingScreenState extends ConsumerState<RankingScreen> {
+class _RankingScreenState extends ConsumerState<RankingScreen> with GetRankingState {
   @override
   void initState() {
     super.initState();
@@ -40,41 +42,40 @@ class _RankingScreenState extends ConsumerState<RankingScreen> {
                 spacing: AppSpacing.w20,
                 children: [
                   Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      spacing: AppSpacing.h20,
-                      children: [_buildLeftPanelContent(), _buildMyRankingSection()],
+                    child: Padding(
+                      padding: const EdgeInsets.all(10),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _buildTitleSection(),
+                          _buildMyInfoSection(rankingUser: watchRankingUser(ref)),
+                          _buildMyRankingSection(rankingUser: watchRankingUser(ref), ranking: watchRanking(ref)),
+                        ],
+                      ),
                     ),
                   ),
-                  _buildTopRankingSection(),
+                  _buildTop100RankingSection(top100RankingUsers: watchTop100RankingUsers(ref)),
                 ],
               ),
             ),
           ),
-          _buildBackButton(),
+          _buildBackButton(onPressed: () => context.go(AppRoute.game.path)),
         ],
       ),
     );
   }
 
-  Widget _buildBackButton() {
+  Widget _buildBackButton({required VoidCallback? onPressed}) {
     return Padding(
       padding: const EdgeInsets.all(20),
       child: Align(
         alignment: Alignment.topLeft,
         child: TextButton(
-          onPressed: () => context.go(AppRoute.game.path),
+          onPressed: onPressed,
           child: const Text('<- BACK', style: AppTexts.b3),
         ),
       ),
-    );
-  }
-
-  Widget _buildLeftPanelContent() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      spacing: AppSpacing.h20,
-      children: [_buildTitleSection(), _buildMyInfoSection()],
     );
   }
 
@@ -82,7 +83,7 @@ class _RankingScreenState extends ConsumerState<RankingScreen> {
     return Center(child: Assets.images.titleKimchiRun227x331x.image());
   }
 
-  Widget _buildMyInfoSection() {
+  Widget _buildMyInfoSection({required RankingUserEntity? rankingUser}) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       spacing: AppSpacing.w10,
@@ -92,13 +93,13 @@ class _RankingScreenState extends ConsumerState<RankingScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           spacing: AppSpacing.h10,
           children: [
-            Text('hardy', style: AppTexts.b3),
+            Text(rankingUser?.nickname ?? DefaultConstants.dashPlaceholder, style: AppTexts.b3),
             RichText(
               textAlign: TextAlign.start,
               text: TextSpan(
                 children: [
                   'run'.colored(baseStyle: AppTexts.b4, trailingSpaces: 1),
-                  '109'.colored(baseStyle: AppTexts.b3),
+                  '${rankingUser?.playCount ?? DefaultConstants.zeroPlaceholder}'.colored(baseStyle: AppTexts.b3),
                   'times'.colored(baseStyle: AppTexts.b4, leadingSpaces: 1),
                 ],
               ),
@@ -109,7 +110,7 @@ class _RankingScreenState extends ConsumerState<RankingScreen> {
     );
   }
 
-  Widget _buildMyRankingSection() {
+  Widget _buildMyRankingSection({required int? ranking, required RankingUserEntity? rankingUser}) {
     return Container(
       height: 50,
       decoration: BoxDecoration(
@@ -120,17 +121,20 @@ class _RankingScreenState extends ConsumerState<RankingScreen> {
       padding: const EdgeInsets.symmetric(horizontal: 30),
       child: Row(
         children: [
-          Text('${1 ?? DefaultConstants.dashPlaceholder}', style: AppTexts.b3.copyWith(color: ColorName.yellowGold100)),
+          Text(
+            '${ranking ?? DefaultConstants.dashPlaceholder}',
+            style: AppTexts.b3.copyWith(color: ColorName.yellowGold100),
+          ),
           Expanded(
             child: Text(
-              'hardy',
+              rankingUser?.nickname ?? DefaultConstants.dashPlaceholder,
               textAlign: TextAlign.center,
               style: AppTexts.b3.copyWith(color: ColorName.yellowGold100),
               overflow: TextOverflow.ellipsis,
             ),
           ),
           Text(
-            '${12345 ?? DefaultConstants.zeroPlaceholder}',
+            '${rankingUser?.highScore ?? DefaultConstants.zeroPlaceholder}',
             style: AppTexts.b3.copyWith(color: ColorName.yellowGold100),
           ),
         ],
@@ -138,7 +142,7 @@ class _RankingScreenState extends ConsumerState<RankingScreen> {
     );
   }
 
-  Widget _buildTopRankingSection() {
+  Widget _buildTop100RankingSection({List<RankingUserEntity> top100RankingUsers = const []}) {
     return Expanded(
       child: Container(
         decoration: BoxDecoration(
@@ -147,7 +151,7 @@ class _RankingScreenState extends ConsumerState<RankingScreen> {
           border: Border.all(color: ColorName.black70),
         ),
         child: ListView.separated(
-          itemCount: 30,
+          itemCount: top100RankingUsers.length,
           itemBuilder: (context, index) {
             return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
@@ -158,13 +162,16 @@ class _RankingScreenState extends ConsumerState<RankingScreen> {
                   Expanded(
                     flex: 2,
                     child: Text(
-                      'nickname',
+                      top100RankingUsers[index].nickname,
                       textAlign: TextAlign.center,
                       style: AppTexts.b4.copyWith(color: ColorName.white100),
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
-                  Text('12345', style: AppTexts.b4.copyWith(color: ColorName.white100)),
+                  Text(
+                    '${top100RankingUsers[index].highScore}',
+                    style: AppTexts.b4.copyWith(color: ColorName.white100),
+                  ),
                 ],
               ),
             );

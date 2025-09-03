@@ -10,13 +10,13 @@ mixin class GetAuthState {
 
     return state.when(
       data: (data) => data,
-      loading: () => AuthLoading(),
+      loading: () => const AuthLoading(),
       error: (e, t) => AuthFailed(exception: Exception(e.toString())),
     );
   }
 
-  User? watchUser(WidgetRef ref) {
-    final state = ref.watch(authViewModelProvider);
+  User? readUser(WidgetRef ref) {
+    final state = ref.read(authViewModelProvider);
 
     return state.when(
       data: (data) {

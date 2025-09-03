@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_kimchi_run/modules/auth/presentation/view_model/auth_view_model.dart';
+import 'package:flutter_kimchi_run/modules/ranking/presentation/state/ranking_state_helper.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 
-import '../../../../../router/route_paths.dart';
 import '../../../../../core/theme/theme.dart';
 import '../../../../../shared/shared.dart';
+import '../../view_model/auth_view_model.dart';
+import '../../state/auth_state_helper.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
@@ -14,13 +14,14 @@ class LoginScreen extends ConsumerStatefulWidget {
   ConsumerState<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends ConsumerState<LoginScreen> {
+class _LoginScreenState extends ConsumerState<LoginScreen> with GetRankingState {
   late final TextEditingController _nicknameTextEditingController;
 
   @override
   void initState() {
     super.initState();
-    _nicknameTextEditingController = TextEditingController();
+
+      _nicknameTextEditingController = TextEditingController(text: readRankingNickname(ref) ?? '');
   }
 
   @override
