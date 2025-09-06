@@ -42,6 +42,9 @@ GoRouter appRouter(Ref ref) {
       final isLoginRoute = state.uri.path == AppRoute.login.path;
       final isAuthenticated = authState is AuthSuccess;
 
+      print('isLoginRoute => $isLoginRoute');
+      print('isAuthenticated => $isAuthenticated');
+
       if (isLoginRoute && isAuthenticated) {
         return AppRoute.game.path;
       }

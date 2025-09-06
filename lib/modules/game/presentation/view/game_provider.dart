@@ -11,6 +11,7 @@ class GameState extends ChangeNotifier {
   int _score = 0;
   int _level = 1;
   bool _isPaused = false;
+  bool _isGameStarted = false;
   int _playTime = 0;
   Timer? _playTimeTimer;
 
@@ -21,6 +22,7 @@ class GameState extends ChangeNotifier {
   int get score => _score;
   int get level => _level;
   bool get isPaused => _isPaused;
+  bool get isGameStarted => _isGameStarted;
   int get playTime => _playTime;
 
   void setProgress(double value) {
@@ -53,6 +55,13 @@ class GameState extends ChangeNotifier {
     notifyListeners();
   }
 
+  void startGame() {
+    _isGameStarted = true;
+    _isPaused = false;
+    startPlayTimeTimer();
+    notifyListeners();
+  }
+
   void pauseGame() {
     _isPaused = true;
     _playTimeTimer?.cancel();
@@ -70,6 +79,7 @@ class GameState extends ChangeNotifier {
     _level = 1;
     _playTime = 0;
     _isPaused = false;
+    _isGameStarted = true;
     startPlayTimeTimer();
     notifyListeners();
   }
