@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_kimchi_run/gen/assets.gen.dart';
-import 'package:flutter_kimchi_run/shared/shared.dart';
+import 'package:flutter_kimchi_run/modules/auth/presentation/view_model/auth_view_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../../../gen/colors.gen.dart';
 import '../../../../../router/route_paths.dart';
+import '../../../../../gen/colors.gen.dart';
+import '../../../../../gen/assets.gen.dart';
 import '../../../../../core/theme/app/app_texts.dart';
+import '../../../../../shared/shared.dart';
 import '../../../../ranking/presentation/view_model/ranking_view_model.dart';
 import '../widgets/game_webview.dart';
 import '../game_provider.dart';
@@ -19,6 +20,14 @@ class GameScreen extends ConsumerStatefulWidget {
 }
 
 class _GameScreenState extends ConsumerState<GameScreen> with WidgetsBindingObserver {
+  @override
+  void initState() {
+    // ref.read(authViewModelProvider.notifier).diagRanking();
+    ref.read(rankingViewModelProvider.notifier).fetchRankingUser();
+
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(gameStateProvider);

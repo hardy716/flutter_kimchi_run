@@ -28,10 +28,6 @@ GoRouter appRouter(Ref ref) {
     initialLocation: AppRoute.splash.path,
     refreshListenable: authValueNotifier,
     redirect: (context, state) {
-      if (state.uri.path == AppRoute.splash.path) {
-        ref.read(rankingViewModelProvider.notifier).fetchRankingUser();
-      }
-
       final authAsync = authValueNotifier.value;
 
       if (authAsync.isLoading || !authAsync.hasValue) return null;

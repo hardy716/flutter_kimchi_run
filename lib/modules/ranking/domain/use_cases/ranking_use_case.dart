@@ -44,7 +44,10 @@ class GetFetchRankingUserUseCase {
   GetFetchRankingUserUseCase({required RankingRepository rankingRepository}) : _rankingRepository = rankingRepository;
 
   Future<Result<RankingUserEntity?, Exception>> fetchRankingUser() async {
-    return await _rankingRepository.fetchRankingUserById();
+    return await _rankingRepository.fetchRankingUserById().execute(
+      onSuccess: (s) => s != null ? Success(s) : Failure(Exception()),
+      onFailure: (f) => Failure(f),
+    );
   }
 }
 
@@ -85,11 +88,11 @@ class GetUpdateRankingUserUseCase {
 
   GetUpdateRankingUserUseCase({required RankingRepository repository}) : _repository = repository;
 
-  Future<Result<void, Exception>> updateRankingUser({
-    required String nickname,
-    required int playCount,
-    required int highScore,
-  }) async {
-    return _repository.updateRankingUser(nickname: nickname, playCount: playCount, highScore: highScore);
+  Future<Result<void, Exception>> updateRankingUser({required RankingUserEntity rankingUser}) async {
+    return _repository.updateRankingUser(
+      nickname: rankingUser.nickname,
+      playCount: rankingUser.playCount,
+      highScore: rankingUser.highScore,
+    );
   }
 }

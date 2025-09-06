@@ -1,4 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_kimchi_run/modules/ranking/data/repositories/ranking_repository_impl.dart';
+import 'package:flutter_kimchi_run/modules/ranking/domain/repositories/ranking_repository.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -15,8 +17,13 @@ part 'auth_use_case.g.dart';
 GetSignInAnonymouslyUseCase getSignInAnonymouslyUseCase(Ref ref) {
   final authRepository = ref.watch(authRepositoryProvider);
   final nicknameRepository = ref.watch(nicknameRepositoryProvider);
+  final rankingRepository = ref.watch(rankingRepositoryProvider);
 
-  return GetSignInAnonymouslyUseCase(authRepository: authRepository, nicknameRepository: nicknameRepository);
+  return GetSignInAnonymouslyUseCase(
+    authRepository: authRepository,
+    nicknameRepository: nicknameRepository,
+    rankingRepository: rankingRepository,
+  );
 }
 
 @riverpod
@@ -43,42 +50,53 @@ GetUpdateNicknameUseCase getUpdateNicknameUseCase(Ref ref) {
 class GetSignInAnonymouslyUseCase {
   final AuthRepository _authRepository;
   final NicknameRepository _nicknameRepository;
+  final RankingRepository _rankingRepository;
 
-  GetSignInAnonymouslyUseCase({required AuthRepository authRepository, required NicknameRepository nicknameRepository})
-    : _authRepository = authRepository,
-      _nicknameRepository = nicknameRepository;
+  GetSignInAnonymouslyUseCase({
+    required AuthRepository authRepository,
+    required NicknameRepository nicknameRepository,
+    required RankingRepository rankingRepository,
+  }) : _authRepository = authRepository,
+       _nicknameRepository = nicknameRepository,
+       _rankingRepository = rankingRepository;
 
   Future<Result<UserCredential?, Exception>> signInAnonymously({String? nickname}) {
     return _authRepository.signInAnonymously().execute(
-      onSuccess: (s) async {
-        final isNewUser = (s?.additionalUserInfo?.isNewUser == true);
-        if (!isNewUser) {
-          if (s?.user?.displayName != nickname && nickname != null) {
-            final checkDuplicateNickname = await _nicknameRepository.checkDuplicateNickname(nickname: nickname);
-            if (checkDuplicateNickname.isFailure) return Failure(Exception());
+      onSuccess: (cred) async {
+        final user = cred?.user;
+        if (user == null) return Failure(Exception('no user'));
 
-            final updateNickname = await _nicknameRepository.updateNickname(nickname: nickname);
-            if (updateNickname.isFailure) return Failure(Exception());
-          }
+        final isNew = cred?.additionalUserInfo?.isNewUser == true;
+        final currentName = user.displayName ?? '';
+        // 신규이면 닉네임 필수, 기존이면 전달 안되면 현재 이름 유지
+        final desired = (nickname?.isNotEmpty == true) ? nickname! : currentName;
 
-          return Success(s);
+        if (isNew && desired.isEmpty) {
+          return Failure(Exception('nickname required for new user'));
         }
 
-        if (nickname == null || nickname.isEmpty) return Failure(Exception());
+        // 닉네임이 바뀌는 경우에만 선 점검/갱신
+        final shouldChangeName = desired.isNotEmpty && desired != currentName;
+        if (shouldChangeName) {
+          // 1) 중복 체크 (또는 updateNickname 내부에서 create()로 원자 보장)
+          final dup = await _nicknameRepository.checkDuplicateNickname(nickname: desired);
+          if (dup.isFailure) return Failure(Exception('duplicate nickname'));
 
-        final checkDuplicateNickname = await _nicknameRepository.checkDuplicateNickname(nickname: nickname);
-        if (checkDuplicateNickname.isFailure) return Failure(Exception());
+          // 2) 닉네임 예약/업데이트 (nicknames/{name} + FirebaseAuth displayName)
+          final upd = await _nicknameRepository.updateNickname(nickname: desired);
+          if (upd.isFailure) return Failure(Exception('failed to update nickname'));
+        }
 
-        final registerUser = await _authRepository.registerUser(nickname);
-        if (registerUser.isFailure) return Failure(Exception());
+        // 3) 유저/랭킹 문서 보장 (항상 1회만 호출)
+        final ensured = await _authRepository.registerUser(desired);
+        if (ensured.isFailure) return Failure(Exception('failed to ensure user docs'));
 
-        return Success(s);
+        return Success(cred);
       },
-      onFailure: (f) {
-        return Failure(f);
-      },
+      onFailure: (e) => Failure(e),
     );
   }
+
 }
 
 class GetCurrentUserUseCase {
@@ -97,7 +115,7 @@ class GetSignOutUseCase {
   GetSignOutUseCase({required AuthRepository authRepository}) : _authRepository = authRepository;
 
   Future<Result<UserCredential?, Exception>> signOut() {
-    return _authRepository.signInAnonymously();
+    return _authRepository.signOut(userCredential: null);
   }
 }
 

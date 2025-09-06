@@ -1,4 +1,5 @@
 import 'package:flutter_kimchi_run/core/constants/debounce_constants.dart';
+import 'package:flutter_kimchi_run/modules/auth/presentation/view_model/auth_view_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:easy_debounce/easy_debounce.dart';
@@ -26,8 +27,12 @@ class RankingViewModel extends _$RankingViewModel {
           .read(getFetchRankingUserUseCaseProvider)
           .fetchRankingUser()
           .execute(
-            onSuccess: (s) => state = state.copyWith(rankingUser: s),
-            onFailure: (f) {},
+            onSuccess: (s) {
+              state = state.copyWith(rankingUser: s);
+            },
+            onFailure: (f) {
+              ref.read(authViewModelProvider.notifier).signInAnonymously();
+            }
           );
     });
   }
@@ -59,16 +64,40 @@ class RankingViewModel extends _$RankingViewModel {
         );
   }
 
-  void updateRankingUer() async {
+  void updateRankingUer({int? newScore}) async {
+    print('[UPDATE] #1 ${newScore}');
+
+    if (newScore == null) return;
+
     final rankingUser = state.rankingUser;
+    print('[UPDATE] #2 ${rankingUser?.playCount}, ${rankingUser?.highScore}');
     if (rankingUser == null) return;
+
+    final isNewHighScore = newScore > rankingUser.highScore;
+
+    final newRankingUser = rankingUser.copyWith(
+      playCount: rankingUser.playCount + 1,
+      highScore: isNewHighScore ? newScore : rankingUser.highScore,
+    );
+
+    print('[UPDATE] #3 ${newRankingUser.playCount}, ${newRankingUser.highScore}');
+
+
+    state = state.copyWith(rankingUser: newRankingUser);
 
     await ref
         .read(getUpdateRankingUserUseCaseProvider)
-        .updateRankingUser(
-          nickname: rankingUser.nickname,
-          playCount: rankingUser.playCount,
-          highScore: rankingUser.highScore,
+        .updateRankingUser(rankingUser: newRankingUser)
+        .execute(
+          onSuccess: (s) {
+            print('[UPDATE] #4 success');
+
+          },
+          onFailure: (f) {
+            state = state.copyWith(rankingUser: rankingUser);
+            print('[UPDATE] #4 failure');
+
+          },
         );
   }
 }

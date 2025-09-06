@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import 'package:flutter_kimchi_run/modules/ranking/presentation/view_model/ranking_view_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../../core/constants/default_constants.dart';
@@ -184,6 +185,8 @@ class GameWebViewState extends ConsumerState<GameWebView> {
                 debugPrint('🎮 Game Over! Scores received from Unity:');
                 debugPrint('   New Score: $newScore');
                 debugPrint('   High Score: $highScore');
+
+                ref.ranking.updateRankingUer(newScore: newScore);
                 
 
               } catch (e) {
