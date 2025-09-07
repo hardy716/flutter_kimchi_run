@@ -1,9 +1,3 @@
-import 'dart:convert';
-
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -73,20 +67,4 @@ class AuthViewModel extends _$AuthViewModel {
           onFailure: (f) => state = AsyncData(AuthFailed(exception: f)),
         );
   }
-
-  // Future<void> diagRanking() async {
-  //   final app = Firebase.app();
-  //   final user = FirebaseAuth.instance.currentUser;
-  //   debugPrint('[DIAG] projectId=${app.options.projectId}  appName=${app.name}  user=${user?.displayName}');
-  //   debugPrint('[DIAG] uid=${user?.uid}  isAuth=${user != null}');
-  //
-  //   if (user == null) return;
-  //
-  //   final ref = FirebaseFirestore.instance.collection('rankings').doc(user.uid);
-  //   debugPrint('[DIAG] path=${ref.path}');
-  //
-  //   final snap = await ref.get(const GetOptions(source: Source.server));
-  //   debugPrint('[DIAG] exists=${snap.exists}  fromCache=${snap.metadata.isFromCache}');
-  //   debugPrint('[DIAG] raw=${jsonEncode(snap.data())}');
-  // }
 }

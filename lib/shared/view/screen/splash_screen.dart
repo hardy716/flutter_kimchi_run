@@ -24,7 +24,6 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with SingleTickerPr
 
     _dropController = AnimationController(vsync: this, duration: const Duration(seconds: 2));
 
-    // 위에서 아래로 떨어지면서 바운스되는 애니메이션
     _dropAnimation = Tween<double>(
       begin: -200,
       end: 0,
@@ -60,6 +59,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with SingleTickerPr
               word[i],
               style: AppTexts.h2.copyWith(
                 color: (i >= colorChangeIndex) ? ColorName.orangeVibrant100 : ColorName.black100,
+                fontSize: 48,
               ),
             ),
           );

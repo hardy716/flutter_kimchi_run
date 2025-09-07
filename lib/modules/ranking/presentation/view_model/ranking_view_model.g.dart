@@ -6,7 +6,7 @@ part of 'ranking_view_model.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$rankingViewModelHash() => r'9210fe6e3cd06a976357bd954c078c0b951ca570';
+String _$rankingViewModelHash() => r'84030908c1896afd9b86b1ee7247b2aefdc9e732';
 
 /// See also [RankingViewModel].
 @ProviderFor(RankingViewModel)

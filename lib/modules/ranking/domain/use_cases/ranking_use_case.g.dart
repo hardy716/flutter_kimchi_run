@@ -86,5 +86,25 @@ final getUpdateRankingUserUseCaseProvider =
 // ignore: unused_element
 typedef GetUpdateRankingUserUseCaseRef =
     AutoDisposeProviderRef<GetUpdateRankingUserUseCase>;
+String _$getUpdateAllNicknameUseCaseHash() =>
+    r'3ae10070e92260279352a36f91196c7063e43e7f';
+
+/// See also [getUpdateAllNicknameUseCase].
+@ProviderFor(getUpdateAllNicknameUseCase)
+final getUpdateAllNicknameUseCaseProvider =
+    AutoDisposeProvider<GetUpdateAllNicknameUseCase>.internal(
+      getUpdateAllNicknameUseCase,
+      name: r'getUpdateAllNicknameUseCaseProvider',
+      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$getUpdateAllNicknameUseCaseHash,
+      dependencies: null,
+      allTransitiveDependencies: null,
+    );
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef GetUpdateAllNicknameUseCaseRef =
+    AutoDisposeProviderRef<GetUpdateAllNicknameUseCase>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

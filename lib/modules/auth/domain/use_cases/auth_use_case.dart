@@ -79,12 +79,12 @@ class GetSignInAnonymouslyUseCase {
         final shouldChangeName = desired.isNotEmpty && desired != currentName;
         if (shouldChangeName) {
           // 1) 중복 체크 (또는 updateNickname 내부에서 create()로 원자 보장)
-          final dup = await _nicknameRepository.checkDuplicateNickname(nickname: desired);
-          if (dup.isFailure) return Failure(Exception('duplicate nickname'));
+          final checkDuplicateNickname = await _nicknameRepository.checkDuplicateNickname(nickname: desired);
+          if (checkDuplicateNickname.isFailure) return Failure(Exception('duplicate nickname'));
 
           // 2) 닉네임 예약/업데이트 (nicknames/{name} + FirebaseAuth displayName)
-          final upd = await _nicknameRepository.updateNickname(nickname: desired);
-          if (upd.isFailure) return Failure(Exception('failed to update nickname'));
+          final updateNickname = await _nicknameRepository.updateNickname(nickname: desired);
+          if (updateNickname.isFailure) return Failure(Exception('failed to update nickname'));
         }
 
         // 3) 유저/랭킹 문서 보장 (항상 1회만 호출)

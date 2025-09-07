@@ -16,7 +16,7 @@ class BackgroundScaffold extends StatelessWidget {
       appBar: appBar,
       body: Container(
         decoration: BoxDecoration(
-          image: DecorationImage(image: Assets.images.bgSky320x1802x.provider(), fit: BoxFit.cover),
+          image: DecorationImage(image: Assets.images.bgSky320x1802x.provider(), fit: BoxFit.fill),
         ),
         child: child,
       ),

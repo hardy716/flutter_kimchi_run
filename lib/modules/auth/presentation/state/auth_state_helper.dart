@@ -5,13 +5,13 @@ import '../view_model/auth_view_model.dart';
 import 'auth_state.dart';
 
 mixin class GetAuthState {
-  AuthState watchAuthState(WidgetRef ref) {
+  bool isLogin(WidgetRef ref) {
     final state = ref.watch(authViewModelProvider);
 
     return state.when(
-      data: (data) => data,
-      loading: () => const AuthLoading(),
-      error: (e, t) => AuthFailed(exception: Exception(e.toString())),
+      data: (data) => true,
+      loading: () => false,
+      error: (e, t) => false,
     );
   }
 

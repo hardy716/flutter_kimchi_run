@@ -1,10 +1,10 @@
-import 'package:flutter_kimchi_run/core/constants/debounce_constants.dart';
-import 'package:flutter_kimchi_run/modules/auth/presentation/view_model/auth_view_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:easy_debounce/easy_debounce.dart';
 
 import '../../../../core/extensions/result_extension.dart';
+import '../../../../core/constants/debounce_constants.dart';
+import '../../../auth/presentation/view_model/auth_view_model.dart';
 import '../../domain/use_cases/ranking_use_case.dart';
 import '../state/ranking_state.dart';
 
@@ -32,7 +32,7 @@ class RankingViewModel extends _$RankingViewModel {
             },
             onFailure: (f) {
               ref.read(authViewModelProvider.notifier).signInAnonymously();
-            }
+            },
           );
     });
   }
@@ -55,33 +55,27 @@ class RankingViewModel extends _$RankingViewModel {
         .read(getFetchCurrentRankingUseCaseProvider)
         .fetchCurrentRanking(userScore: rankingUser.highScore, updatedAt: rankingUser.updatedAt)
         .execute(
-          onSuccess: (s) {
-            state = state.copyWith(ranking: s);
-
-            print('[LOG] ranking => ${state.ranking}');
-          },
+          onSuccess: (s) => state = state.copyWith(ranking: s),
           onFailure: (f) {},
         );
   }
 
-  void updateRankingUer({int? newScore}) async {
-    print('[UPDATE] #1 ${newScore}');
+  void updateRankingUer({int? highScore}) async {
+    if (highScore == null) return;
 
-    if (newScore == null) return;
+    if (state.rankingUser == null) {
+      await fetchRankingUser();
+    }
 
     final rankingUser = state.rankingUser;
-    print('[UPDATE] #2 ${rankingUser?.playCount}, ${rankingUser?.highScore}');
     if (rankingUser == null) return;
 
-    final isNewHighScore = newScore > rankingUser.highScore;
+    final isNewHighScore = highScore > rankingUser.highScore;
 
     final newRankingUser = rankingUser.copyWith(
       playCount: rankingUser.playCount + 1,
-      highScore: isNewHighScore ? newScore : rankingUser.highScore,
+      highScore: isNewHighScore ? highScore : rankingUser.highScore,
     );
-
-    print('[UPDATE] #3 ${newRankingUser.playCount}, ${newRankingUser.highScore}');
-
 
     state = state.copyWith(rankingUser: newRankingUser);
 
@@ -89,15 +83,17 @@ class RankingViewModel extends _$RankingViewModel {
         .read(getUpdateRankingUserUseCaseProvider)
         .updateRankingUser(rankingUser: newRankingUser)
         .execute(
-          onSuccess: (s) {
-            print('[UPDATE] #4 success');
-
-          },
+          onSuccess: (s) {},
           onFailure: (f) {
             state = state.copyWith(rankingUser: rankingUser);
-            print('[UPDATE] #4 failure');
-
           },
         );
+  }
+
+  Future<bool> updateNickname({required String? nickname}) async {
+    return await ref
+        .read(getUpdateAllNicknameUseCaseProvider)
+        .updateAllNickname(nickname: nickname)
+        .execute(onSuccess: (s) => true, onFailure: (f) => false);
   }
 }

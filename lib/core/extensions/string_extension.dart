@@ -13,6 +13,12 @@ extension Sha256EncodingExtension on String {
   }
 }
 
+extension NullableOrEmptyStringExtension on String? {
+  String orPlaceholder({String? placeHolder}) {
+    return (this != null && this?.isNotEmpty == true) ? this! : (placeHolder ?? '');
+  }
+}
+
 extension TextSpanStylingExtension on String {
   TextSpan colored({TextStyle? baseStyle, int leadingSpaces = 0, int trailingSpaces = 0}) {
     return TextSpan(text: ' ' * leadingSpaces + this + ' ' * trailingSpaces, style: baseStyle);

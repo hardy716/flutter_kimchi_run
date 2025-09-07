@@ -21,8 +21,6 @@ abstract class FirebaseRankingDataSource {
 
   Future<Result<List<RankingUserDto>, Exception>> fetchTop100RankingUsers();
 
-  // Future<Result<List<RankingUserDto>, Exception>> fetchFriendsRankingUsers({required List<String> friends});
-
   Future<Result<int, Exception>> fetchHigherRankingUserCount({required int userScore});
 
   Future<Result<int, Exception>> fetchSameEarlierRankingUserCount({
@@ -31,6 +29,12 @@ abstract class FirebaseRankingDataSource {
   });
 
   Future<Result<void, Exception>> updateRankingUser({
+    required String nickname,
+    required int playCount,
+    required int highScore,
+  });
+
+  Future<Result<void, Exception>> updateAllNickname({
     required String nickname,
     required int playCount,
     required int highScore,
@@ -73,25 +77,6 @@ class FirebaseRankingDataSourceImpl implements FirebaseRankingDataSource {
           onFailure: (f) => Failure(f),
         );
   }
-
-  // @override
-  // Future<Result<List<RankingUserDto>, Exception>> fetchFriendsRankingUsers({required List<String> friends}) async {
-  //   if (friends.isEmpty) return Failure(Exception());
-  //
-  //   /// NOTE: 논리적 OR 계열(or, in, array-contains-any) 쿼리 제한 (30)
-  //   /// https://firebase.google.com/docs/firestore/query-data/queries?utm_source=chatgpt.com&hl=ko#limits_on_or_queries
-  //   /// const chunkSize = 30;
-  //
-  //   final db = FirebaseFirestore.instance;
-  //
-  //   return await db
-  //       .collection(FirestoreCollection.rankings.name)
-  //       .where(FieldPath.documentId, whereIn: friends)
-  //       .get().throwIfTimeOut().toResult<QuerySnapshot<Map<String, dynamic>>>().execute(
-  //       onSuccess: (s) => Success(s.docs.map((doc) => RankingUserDto.fromDoc(doc)).toList()),
-  //     onFailure: (f) => Failure(f),
-  //   );
-  // }
 
   @override
   Future<Result<int, Exception>> fetchHigherRankingUserCount({required int userScore}) async {
@@ -140,5 +125,40 @@ class FirebaseRankingDataSourceImpl implements FirebaseRankingDataSource {
         }, SetOptions(merge: true))
         .throwIfTimeOut()
         .toResult();
+  }
+
+  @override
+  Future<Result<void, Exception>> updateAllNickname({
+    required String nickname,
+    required int playCount,
+    required int highScore,
+  }) async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return Failure(Exception('로그인된 사용자가 없습니다'));
+
+    try {
+      final batch = FirebaseFirestore.instance.batch();
+
+      batch.update(
+        FirebaseFirestore.instance.collection(FirestoreCollection.users.name).doc(user.uid),
+        {FirestoreCollection.users.nickname.name: nickname},
+      );
+
+      batch.update(
+        FirebaseFirestore.instance.collection(FirestoreCollection.rankings.name).doc(user.uid),
+        {
+          FirestoreCollection.rankings.nickname.name: nickname,
+          FirestoreCollection.rankings.playCount.name: playCount,
+          FirestoreCollection.rankings.highScore.name: highScore,
+          FirestoreCollection.rankings.updatedAt.name: FieldValue.serverTimestamp(),
+        },
+      );
+
+      await user.updateDisplayName(nickname);
+
+      return await batch.commit().throwIfTimeOut().toResult();
+    } catch (e) {
+      return Failure(Exception('배치 업데이트 실패: $e'));
+    }
   }
 }

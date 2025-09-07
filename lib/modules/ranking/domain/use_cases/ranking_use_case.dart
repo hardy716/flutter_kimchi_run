@@ -1,9 +1,11 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../../../../core/base/result.dart';
 import '../../../../core/extensions/result_extension.dart';
+import '../../../auth/data/repositories/nickname_repository_impl.dart';
+import '../../../auth/domain/repositories/nickname_repository.dart';
 import '../../data/repositories/ranking_repository_impl.dart';
 import '../repositories/ranking_repository.dart';
 import '../entity/ranking_user_entity.dart';
@@ -36,6 +38,14 @@ GetUpdateRankingUserUseCase getUpdateRankingUserUseCase(Ref ref) {
   final repository = ref.watch(rankingRepositoryProvider);
 
   return GetUpdateRankingUserUseCase(repository: repository);
+}
+
+@riverpod
+GetUpdateAllNicknameUseCase getUpdateAllNicknameUseCase(Ref ref) {
+  final nicknameRepository = ref.watch(nicknameRepositoryProvider);
+  final rankingRepository = ref.watch(rankingRepositoryProvider);
+
+  return GetUpdateAllNicknameUseCase(nicknameRepository: nicknameRepository, rankingRepository: rankingRepository);
 }
 
 class GetFetchRankingUserUseCase {
@@ -94,5 +104,60 @@ class GetUpdateRankingUserUseCase {
       playCount: rankingUser.playCount,
       highScore: rankingUser.highScore,
     );
+  }
+}
+
+class GetUpdateAllNicknameUseCase {
+  final NicknameRepository _nicknameRepository;
+  final RankingRepository _rankingRepository;
+
+  GetUpdateAllNicknameUseCase({
+    required NicknameRepository nicknameRepository,
+    required RankingRepository rankingRepository,
+  }) : _nicknameRepository = nicknameRepository,
+       _rankingRepository = rankingRepository;
+
+  Future<Result<String, Exception>> updateAllNickname({String? nickname}) async {
+    if (nickname == null || nickname.trim().isEmpty) {
+      return Failure(Exception('닉네임이 비어있습니다'));
+    }
+
+    final trimmedNickname = nickname.trim();
+
+    try {
+      final duplicateResult = await _nicknameRepository.checkDuplicateNickname(nickname: trimmedNickname);
+      if (duplicateResult.isFailure) {
+        return Failure(Exception('닉네임 중복 확인 실패'));
+      }
+
+      final rankingUserResult = await _rankingRepository.fetchRankingUserById();
+      RankingUserEntity? rankingUser;
+      switch (rankingUserResult) {
+        case Success(value: final userData):
+          rankingUser = userData;
+          break;
+        case Failure():
+          rankingUser = null;
+          break;
+      }
+
+      if (rankingUser == null) {
+        return Failure(Exception('사용자 랭킹 정보를 찾을 수 없습니다'));
+      }
+
+      final batchResult = await _rankingRepository.updateAllNickname(
+        nickname: trimmedNickname,
+        playCount: rankingUser.playCount,
+        highScore: rankingUser.highScore,
+      );
+
+      if (batchResult.isFailure) {
+        return Failure(Exception('닉네임 배치 업데이트 실패'));
+      }
+
+      return Success(trimmedNickname);
+    } catch (e) {
+      return Failure(Exception('닉네임 업데이트 중 예상치 못한 오류: $e'));
+    }
   }
 }

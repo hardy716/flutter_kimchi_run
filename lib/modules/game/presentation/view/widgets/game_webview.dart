@@ -2,11 +2,12 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
-import 'package:flutter_kimchi_run/modules/ranking/presentation/view_model/ranking_view_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../../core/constants/default_constants.dart';
-import '../game_provider.dart';
+import '../../../../ranking/presentation/view_model/ranking_view_model.dart';
+import '../view_model/game_view_model.dart';
+import '../state/game_state.dart';
 
 class GameWebView extends ConsumerStatefulWidget {
   const GameWebView({super.key});
@@ -15,7 +16,6 @@ class GameWebView extends ConsumerStatefulWidget {
   ConsumerState<GameWebView> createState() => GameWebViewState();
 }
 
-// GameWebView의 메소드에 접근하기 위한 전역 키
 final GlobalKey<GameWebViewState> gameWebViewKey = GlobalKey<GameWebViewState>();
 
 class GameWebViewState extends ConsumerState<GameWebView> {
@@ -27,76 +27,92 @@ class GameWebViewState extends ConsumerState<GameWebView> {
       final String type = data['type'] ?? '';
       final dynamic payload = data['data'];
 
-      final notifier = ref.read(gameStateProvider);
+      debugPrint('📦 Parsed Unity message - type: $type, data: $payload');
 
       switch (type) {
         case 'unity_ready':
-          notifier.setUnityReady(true);
+          ref.game.setUnityReady(true);
           debugPrint('🎮 Unity is ready!');
           break;
-        case 'game_started':
-        case 'game_playing':
-          notifier.startGame();
-          debugPrint('🎮 Game started/playing from Unity');
-          break;
-        case 'game_ready':
-          // Unity가 시작 상태임을 알림 (게임 시작 가능)
-          debugPrint('🎮 Unity game is ready to start');
-          break;
-        case 'game_ended':
+
         case 'game_over':
-        case 'game_finished':
-          notifier.pauseGame();
-          debugPrint('🎮 Game ended/over/finished from Unity');
+          debugPrint('🎮 Unity Game Over!');
           break;
+
+        // UI State Messages
+        case 'ui_state_start':
+          ref.game.updateGameUI(GameUI.START);
+          debugPrint('🎮 Unity UI State: Start');
+          break;
+
+        case 'ui_state_playing':
+          ref.game.updateGameUI(GameUI.PLAYING);
+          debugPrint('🎮 Unity UI State: Playing');
+          break;
+
+        case 'ui_state_finish':
+          ref.game.updateGameUI(GameUI.FINISH);
+          debugPrint('🎮 Unity UI State: Finish');
+          break;
+
+        // Game State Messages
+        case 'game_restarting':
+          debugPrint('🎮 Unity Game: Restarting');
+          break;
+
+        case 'game_started':
+          debugPrint('🎮 Unity Game: Started');
+          break;
+
         case 'game_paused':
-          notifier.pauseGame();
-          debugPrint('🎮 Game paused from Unity');
+          debugPrint('🎮 Unity Game: Paused');
           break;
+
         case 'game_resumed':
-          if (!notifier.isGameStarted) {
-            notifier.startGame();
-          } else {
-            notifier.resumeGame();
-          }
-          debugPrint('🎮 Game resumed from Unity');
+          debugPrint('🎮 Unity Game: Resumed');
           break;
-        case 'score_update':
-          notifier.updateScore(int.tryParse(payload.toString()) ?? 0);
-          debugPrint('📊 Score updated: ${payload}');
+
+        case 'game_ready':
+          debugPrint('🎮 Unity Game Status: Ready');
           break;
-        case 'level_complete':
-          notifier.updateLevel(int.tryParse(payload.toString()) ?? 1);
-          debugPrint('🎯 Level completed: ${payload}');
+
+        case 'game_playing':
+          debugPrint('🎮 Unity Game Status: Playing');
           break;
+
+        case 'game_finished':
+          debugPrint('🎮 Unity Game Status: Finished');
+          break;
+
+        // Score Message
         case 'unity_game_score':
-          // 가이드에 따른 점수 전송 처리
-          if (payload is Map) {
-            final newScore = payload['newScore'] ?? 0;
-            final highScore = payload['highScore'] ?? 0;
-            notifier.updateScore(newScore);
-            notifier.pauseGame(); // 게임 종료로 간주
-            debugPrint('🏆 Final Score - New: $newScore, High: $highScore');
+          if (payload != null) {
+            try {
+              Map<String, dynamic> scoreData;
+              if (payload is String) {
+                scoreData = jsonDecode(payload);
+              } else {
+                scoreData = payload as Map<String, dynamic>;
+              }
+              
+              final int newScore = scoreData['newScore'] ?? 0;
+              final int highScore = scoreData['highScore'] ?? 0;
+
+              ref.ranking.updateRankingUer(highScore: highScore);
+
+              debugPrint('🎮 Unity Game Score: newScore=$newScore, highScore=$highScore');
+            } catch (e) {
+              debugPrint('❌ Error parsing unity_game_score: $e');
+            }
           }
+          break;
+
+        default:
+          debugPrint('⚠️ Unhandled Unity message type: $type');
           break;
       }
     } catch (e) {
       debugPrint('Unity 메시지 처리 오류: $e');
-    }
-  }
-
-  void _pauseResumeGame(bool isPaused) {
-    if (webViewController != null) {
-      final method = isPaused ? 'PauseGame' : 'ResumeGame';
-      webViewController!.evaluateJavascript(
-        source: '''
-          if (typeof window.sendToUnity === 'function') {
-            window.sendToUnity('GameManager', '$method', '');
-          } else {
-            console.warn('Unity communication not ready for $method');
-          }
-        ''',
-      );
     }
   }
 
@@ -118,15 +134,8 @@ class GameWebViewState extends ConsumerState<GameWebView> {
 
   @override
   Widget build(BuildContext context) {
-    final gameState = ref.watch(gameStateProvider);
-    
-    ref.listen(gameStateProvider, (previousState, newState) {
-      if (previousState?.isPaused != newState.isPaused) {
-        _pauseResumeGame(newState.isPaused);
-      }
-      
-      // Unity 준비 완료 시 게임 상태 확인
-      if (newState.isUnityReady && (previousState?.isUnityReady != true)) {
+    ref.listen(gameViewModelProvider, (prev, next) {
+      if (next.isUnityReady && (prev?.isUnityReady != true)) {
         Future.delayed(const Duration(milliseconds: 500), () {
           _checkGameStatus();
         });
@@ -150,14 +159,13 @@ class GameWebViewState extends ConsumerState<GameWebView> {
         builtInZoomControls: false,
         displayZoomControls: false,
         useShouldOverrideUrlLoading: true,
-        // 게임 시작 상태에 따른 터치 이벤트 제어 (JavaScript로 처리)
         allowsLinkPreview: false,
         allowsBackForwardNavigationGestures: false,
       ),
       onWebViewCreated: (controller) {
         webViewController = controller;
         
-        // 가이드에 따른 Unity 메시지 핸들러 등록
+        // Unity 메시지 핸들러 등록
         controller.addJavaScriptHandler(
           handlerName: 'FlutterUnityBridge',
           callback: (args) {
@@ -166,41 +174,11 @@ class GameWebViewState extends ConsumerState<GameWebView> {
             }
           },
         );
-
-        // 점수 수신 핸들러 (Unity에서 게임 종료 시 호출)
-        controller.addJavaScriptHandler(
-          handlerName: 'receiveGameScore',
-          callback: (args) {
-            if (args.isNotEmpty) {
-              try {
-                final scoreData = args[0] as Map<String, dynamic>;
-                final newScore = scoreData['newScore'] ?? 0;
-                final highScore = scoreData['highScore'] ?? 0;
-                
-                // 게임 상태 업데이트
-                final notifier = ref.read(gameStateProvider);
-                notifier.updateScore(newScore);
-                notifier.pauseGame(); // 게임 오버 상태로 설정
-                
-                debugPrint('🎮 Game Over! Scores received from Unity:');
-                debugPrint('   New Score: $newScore');
-                debugPrint('   High Score: $highScore');
-
-                ref.ranking.updateRankingUer(newScore: newScore);
-                
-
-              } catch (e) {
-                debugPrint('❌ Score handling error: $e');
-              }
-            }
-          },
-        );
       },
-      onLoadStart: (controller, url) => ref.read(gameStateProvider).setLoading(true),
+      onLoadStart: (controller, url) => ref.game.setLoading(true),
       onLoadStop: (controller, url) async {
-        ref.read(gameStateProvider).setLoading(false);
+        ref.game.setLoading(false);
         
-        // 가이드에 따른 해상도 설정 및 Unity 통신 초기화
         await controller.evaluateJavascript(
           source: '''
             // 기본 CSS 설정 (Unity 비율 보존)
@@ -417,8 +395,8 @@ class GameWebViewState extends ConsumerState<GameWebView> {
           _checkGameStatus();
         });
       },
-      onProgressChanged: (controller, progress) => ref.read(gameStateProvider).setProgress(progress / 100),
-      onReceivedError: (controller, request, error) => ref.read(gameStateProvider).setErrorMessage(error.description),
+      onProgressChanged: (controller, progress) => ref.game.setProgress(progress / 100),
+      onReceivedError: (controller, request, error) => ref.game.setErrorMessage(error.description),
       shouldOverrideUrlLoading: (controller, navigationAction) async => NavigationActionPolicy.ALLOW,
     );
   }

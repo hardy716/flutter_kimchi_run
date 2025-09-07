@@ -17,4 +17,10 @@ abstract class RankingRepository {
     required int playCount,
     required int highScore,
   });
+
+  Future<Result<void, Exception>> updateAllNickname({
+    required String nickname,
+    required int playCount,
+    required int highScore,
+  });
 }

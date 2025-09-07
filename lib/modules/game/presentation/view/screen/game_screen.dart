@@ -1,16 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_kimchi_run/modules/auth/presentation/view_model/auth_view_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 
-import '../../../../../router/route_paths.dart';
 import '../../../../../gen/colors.gen.dart';
 import '../../../../../gen/assets.gen.dart';
-import '../../../../../core/theme/app/app_texts.dart';
-import '../../../../../shared/shared.dart';
+import '../../../../../shared/view/widgets/action_text_button.dart';
+import '../../../../../shared/view/widgets/expanded_align.dart';
 import '../../../../ranking/presentation/view_model/ranking_view_model.dart';
+import '../../../../ranking/presentation/state/ranking_state_helper.dart';
+import '../../../../auth/presentation/state/auth_state_helper.dart';
+import '../view_model/game_view_model.dart';
+import '../state/game_state_helper.dart';
+import '../state/game_state.dart';
 import '../widgets/game_webview.dart';
-import '../game_provider.dart';
+import '../widgets/game_app_bar.dart';
+import '../widgets/game_ranking_section.dart';
+import '../widgets/game_login_section.dart';
+import '../widgets/game_splash_section.dart';
 
 class GameScreen extends ConsumerStatefulWidget {
   const GameScreen({super.key});
@@ -19,54 +24,88 @@ class GameScreen extends ConsumerStatefulWidget {
   ConsumerState<GameScreen> createState() => _GameScreenState();
 }
 
-class _GameScreenState extends ConsumerState<GameScreen> with WidgetsBindingObserver {
+class _GameScreenState extends ConsumerState<GameScreen>
+    with WidgetsBindingObserver, GetAuthState, GetRankingState, GetGameState {
+  bool _isShowSplash = true;
+
   @override
   void initState() {
-    // ref.read(authViewModelProvider.notifier).diagRanking();
-    ref.read(rankingViewModelProvider.notifier).fetchRankingUser();
-
     super.initState();
+  }
+
+  void _checkGameUIAndHideSplash(GameUI gameUI) {
+    if (gameUI == GameUI.START && _isShowSplash) {
+      setState(() {
+        _isShowSplash = false;
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    final state = ref.watch(gameStateProvider);
+    final gameState = watchGameState(ref);
+    final gameUI = watchGameUI(ref);
+    final isLoginShow = isShowLogin(ref);
+    final isRankingShow = isShowRanking(ref);
+
+    _checkGameUIAndHideSplash(gameUI);
 
     return Scaffold(
-      appBar: (false)
-          ? AppBar(
-              backgroundColor: ColorName.skyBlue100,
-              surfaceTintColor: Colors.transparent,
-              actions: [
-                TextButton(
-                  onPressed: () async {
-                    context.go(AppRoute.ranking.path);
-                    await ref.ranking.fetchRankingUser();
-                    await ref.ranking.fetchTop100RankingUser();
-                    await ref.ranking.fetchCurrentRanking();
-                  },
-                  child: Row(
-                    children: [Text('RANKING', style: AppTexts.b3.copyWith(decoration: TextDecoration.underline))],
-                  ),
-                ),
-              ],
-            )
-          : null,
+      backgroundColor: ColorName.skyBlue100,
+      appBar: GameAppBar(
+        isShow: (!_isShowSplash && gameUI != GameUI.PLAYING),
+        onLogin: () {
+          ref.game.updateLoginShow(!isLoginShow);
+          ref.game.updateRankingShow(false);
+        },
+        onRanking: () async {
+          ref.game.updateRankingShow(!isRankingShow);
+          ref.game.updateLoginShow(false);
+
+          await ref.ranking.fetchRankingUser();
+          await ref.ranking.fetchTop100RankingUser();
+          await ref.ranking.fetchCurrentRanking();
+        },
+      ),
       body: Stack(
         children: [
-          GameWebView(key: gameWebViewKey),
-          if (false) ... [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                ExpandedAlign(child: Assets.images.titleKimchiRun227x331x.image()),
-                ExpandedAlign(child: ActionTextButton(text: 'START', onTap: () {})),
-              ],
-            ),
-          ],
-          if (state.errorMessage != null) _buildErrorOverlay(),
+          // UNITY WebGL VIEW
+          Offstage(
+            offstage: _isShowSplash || isLoginShow || isRankingShow || !gameState.isUnityReady,
+            child: GameWebView(key: gameWebViewKey),
+          ),
+
+          // SPLASH SECTION
+          if (_isShowSplash || !gameState.isUnityReady) GameSplashSection(
+            progress: gameState.progress, 
+            isUnityReady: gameState.isUnityReady,
+          ),
+
+          // START SECTION
+          if (!_isShowSplash && !isLoginShow && !isRankingShow && gameUI == GameUI.START) _buildStartSection(),
+
+          // RANKING SECTION
+          if (!_isShowSplash && isRankingShow) const GameRankingSection(),
+
+          // LOGIN SECTION
+          if (!_isShowSplash && isLoginShow) const GameLoginSection(),
+
+          // ERROR SECTION
+          if (gameState.errorMessage != null) _buildErrorOverlay(),
         ],
       ),
+    );
+  }
+
+  Widget _buildStartSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        ExpandedAlign(child: Assets.images.titleKimchiRun227x331x.image()),
+        ExpandedAlign(
+          child: ActionTextButton(text: 'START', onTap: () {}),
+        ),
+      ],
     );
   }
 
@@ -79,12 +118,9 @@ class _GameScreenState extends ConsumerState<GameScreen> with WidgetsBindingObse
           children: [
             Icon(Icons.error, size: 64, color: Colors.red.shade400),
             const SizedBox(height: 16),
-            Text('로딩 실패: ${ref.read(gameStateProvider).errorMessage}'),
+            Text('로딩 실패: ${watchGameErrorMessage(ref)}'),
             const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: () => ref.read(gameStateProvider).setErrorMessage(null),
-              child: const Text('다시 시도'),
-            ),
+            ElevatedButton(onPressed: () => ref.game.setErrorMessage(null), child: const Text('다시 시도')),
           ],
         ),
       ),

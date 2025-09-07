@@ -59,4 +59,13 @@ class RankingRepositoryImpl implements RankingRepository {
   }) async {
     return await _source.updateRankingUser(nickname: nickname, playCount: playCount, highScore: highScore);
   }
+
+  @override
+  Future<Result<void, Exception>> updateAllNickname({
+    required String nickname,
+    required int playCount,
+    required int highScore,
+  }) async {
+    return await _source.updateAllNickname(nickname: nickname, playCount: playCount, highScore: highScore);
+  }
 }
