@@ -35,8 +35,8 @@ Flutter Kimchi Run은 Flutter와 Unity WebGL을 결합하여 개발된 모바일
 | 게임 화면 |
 | <img alt="Image" src="https://github.com/user-attachments/assets/4f22c45d-2b86-4dab-b75e-8799c4b4046c" /> |
 
-게임 영상 링크 - [https://drive.google.com/file/d/1WtJAUoJSE-hNY3ee1_EMritnKwe9U-Bm/view?usp=sharing](https://drive.google.com/file/d/1WtJAUoJSE-hNY3ee1_EMritnKwe9U-Bm/view?usp=sharing)
-
+게임 로딩 영상 링크 - [https://drive.google.com/file/d/1Lz_10MCNN78RyquFADnLGZ2KU3dOzrZD/view?usp=sharing](https://drive.google.com/file/d/1Lz_10MCNN78RyquFADnLGZ2KU3dOzrZD/view?usp=sharing)
+게임 플레이 영상 링크 - [https://drive.google.com/file/d/1WtJAUoJSE-hNY3ee1_EMritnKwe9U-Bm/view?usp=sharing](https://drive.google.com/file/d/1WtJAUoJSE-hNY3ee1_EMritnKwe9U-Bm/view?usp=sharing)
 
 
 #### ✨ 주요 기능
