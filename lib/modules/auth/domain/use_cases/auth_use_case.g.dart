@@ -7,7 +7,7 @@ part of 'auth_use_case.dart';
 // **************************************************************************
 
 String _$getSignInAnonymouslyUseCaseHash() =>
-    r'2e8de2468a12870f517716649759c4880ac1d27a';
+    r'ded3dfd75c735a7565b01733a2628f25239316be';
 
 /// See also [getSignInAnonymouslyUseCase].
 @ProviderFor(getSignInAnonymouslyUseCase)
