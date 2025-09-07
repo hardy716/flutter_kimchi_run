@@ -4,9 +4,9 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../modules/game/presentation/view/view_model/ranking_view_model.dart';
 import '../modules/auth/presentation/view_model/auth_view_model.dart';
 import '../modules/auth/presentation/state/auth_state.dart';
+import '../modules/game/presentation/view_model/ranking_view_model.dart';
 import 'route_page_builder.dart';
 import 'route_paths.dart';
 

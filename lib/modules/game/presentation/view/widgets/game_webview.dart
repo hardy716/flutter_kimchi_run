@@ -3,9 +3,9 @@ import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../../core/constants/default_constants.dart';
-import '../view_model/game_view_model.dart';
-import '../handlers/unity_message_handler.dart';
-import '../scripts/unity_webview_scripts.dart';
+import '../../../data/handler/unity_message_handler.dart';
+import '../../../data/handler/unity_webview_scripts.dart';
+import '../../view_model/game_view_model.dart';
 
 class GameWebView extends ConsumerStatefulWidget {
   const GameWebView({super.key});

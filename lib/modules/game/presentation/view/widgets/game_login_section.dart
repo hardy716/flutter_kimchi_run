@@ -4,9 +4,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../../shared/shared.dart';
 import '../../../../../core/theme/theme.dart';
 import '../../../../auth/presentation/view_model/auth_view_model.dart';
-import '../state/ranking_state_helper.dart';
-import '../view_model/ranking_view_model.dart';
-import '../view_model/game_view_model.dart';
+import '../../view_model/ranking_view_model.dart';
+import '../../view_model/game_view_model.dart';
+import '../../state/ranking_state_helper.dart';
 
 class GameLoginSection extends ConsumerStatefulWidget {
   const GameLoginSection({super.key});

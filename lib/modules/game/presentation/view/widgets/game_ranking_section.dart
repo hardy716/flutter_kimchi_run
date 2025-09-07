@@ -8,7 +8,7 @@ import '../../../../../gen/colors.gen.dart';
 import '../../../../../gen/assets.gen.dart';
 import '../../../../../shared/shared.dart';
 import '../../../domain/entity/ranking_user_entity.dart';
-import '../state/ranking_state_helper.dart';
+import '../../state/ranking_state_helper.dart';
 
 class GameRankingSection extends ConsumerWidget with GetRankingState {
   const GameRankingSection({super.key});

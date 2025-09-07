@@ -3,11 +3,13 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../../core/constants/default_constants.dart';
-import '../view_model/game_view_model.dart';
-import '../view_model/ranking_view_model.dart';
-import '../state/game_state.dart';
-import '../enums/unity_message_type.dart';
+import '../../../../core/constants/default_constants.dart';
+import '../../presentation/state/game_state.dart';
+import '../../presentation/view_model/game_view_model.dart';
+import '../../presentation/view_model/ranking_view_model.dart';
+import 'unity_message_type.dart';
+
+
 
 class UnityMessageHandler {
   final WidgetRef ref;

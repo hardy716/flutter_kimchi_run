@@ -1,6 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-import '../../../domain/entity/ranking_user_entity.dart';
+import '../../domain/entity/ranking_user_entity.dart';
 
 part 'ranking_state.freezed.dart';
 
