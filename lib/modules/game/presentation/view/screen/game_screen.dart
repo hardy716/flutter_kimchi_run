@@ -3,12 +3,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../../gen/colors.gen.dart';
 import '../../../../../gen/assets.gen.dart';
-import '../../../../../shared/view/widgets/action_text_button.dart';
-import '../../../../../shared/view/widgets/expanded_align.dart';
-import '../view_model/ranking_view_model.dart';
-import '../state/ranking_state_helper.dart';
+import '../../../../../core/theme/theme.dart';
+import '../../../../../shared/shared.dart';
 import '../../../../auth/presentation/state/auth_state_helper.dart';
+import '../view_model/ranking_view_model.dart';
 import '../view_model/game_view_model.dart';
+import '../state/ranking_state_helper.dart';
 import '../state/game_state_helper.dart';
 import '../state/game_state.dart';
 import '../widgets/game_webview.dart';
@@ -115,11 +115,10 @@ class _GameScreenState extends ConsumerState<GameScreen>
       child: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
+          spacing: AppSpacing.h20,
           children: [
-            Icon(Icons.error, size: 64, color: Colors.red.shade400),
-            const SizedBox(height: 16),
+            Icon(Icons.error, size: AppSizes.iconSize.height, color: ColorName.red500),
             Text('로딩 실패: ${watchGameErrorMessage(ref)}'),
-            const SizedBox(height: 16),
             ElevatedButton(onPressed: () => ref.game.setErrorMessage(null), child: const Text('다시 시도')),
           ],
         ),

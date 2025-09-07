@@ -2,6 +2,11 @@ import 'package:flutter/cupertino.dart';
 
 class AppSizes {
   static const Size textFormFieldSize = Size(double.infinity, 80);
+  static const Size iconSize = Size(64, 64);
+}
+
+class AppHeight {
+  static const double h50 = 50;
 }
 
 class AppSpacing {

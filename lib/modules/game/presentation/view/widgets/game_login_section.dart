@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../../shared/shared.dart';
-import '../../../../../core/theme/app/app_paddings.dart';
+import '../../../../../core/theme/theme.dart';
 import '../../../../auth/presentation/view_model/auth_view_model.dart';
 import '../state/ranking_state_helper.dart';
 import '../view_model/ranking_view_model.dart';
@@ -36,7 +36,7 @@ class _GameLoginSectionState extends ConsumerState<GameLoginSection> with GetRan
   Widget build(BuildContext context) {
     return BackgroundScaffold(
       child: Padding(
-        padding: const EdgeInsets.only(left: 80, right: 80, bottom: 20),
+        padding: AppPaddings.gameLoginSectionOuterPadding,
         child: SingleChildScrollView(
           padding: AppPaddings.screenPadding,
           child: SizedBox(
@@ -44,7 +44,7 @@ class _GameLoginSectionState extends ConsumerState<GameLoginSection> with GetRan
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const Spacer(flex: 1),
+                const Spacer(),
                 StyledTextFormField(
                   hintText: 'nickname',
                   keyboardType: TextInputType.text,

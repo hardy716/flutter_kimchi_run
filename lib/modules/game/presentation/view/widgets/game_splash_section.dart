@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_kimchi_run/shared/shared.dart';
 
-import '../../../../../core/theme/app/app_texts.dart';
+import '../../../../../core/constants/app_constants.dart';
+import '../../../../../core/theme/theme.dart';
+import '../../../../../shared/shared.dart';
 import '../../../../../gen/assets.gen.dart';
 import '../../../../../gen/colors.gen.dart';
 
@@ -24,7 +25,7 @@ class _GameSplashSectionState extends State<GameSplashSection>
   void initState() {
     super.initState();
     _animationController = AnimationController(
-      duration: const Duration(seconds: 6),
+      duration: const Duration(seconds: 10),
       vsync: this,
     );
     _revealAnimation = Tween<double>(
@@ -53,7 +54,7 @@ class _GameSplashSectionState extends State<GameSplashSection>
             flex: 4,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              spacing: 20,
+              spacing: AppSpacing.h20,
               children: [
                 AnimatedBuilder(
                   animation: _revealAnimation,
@@ -82,8 +83,9 @@ class _GameSplashSectionState extends State<GameSplashSection>
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 60),
+                  padding: AppPaddings.symmetricH60,
                   child: Column(
+                    spacing: AppSpacing.h10,
                     children: [
                       LinearProgressIndicator(
                         value: widget.progress,
@@ -91,9 +93,8 @@ class _GameSplashSectionState extends State<GameSplashSection>
                         valueColor: const AlwaysStoppedAnimation<Color>(ColorName.orangeVibrant100),
                         minHeight: 8,
                       ),
-                      const SizedBox(height: 10),
                       Text(
-                        widget.isUnityReady ? 'Preparing game...' : '${(widget.progress * 100).toInt()}%',
+                        widget.isUnityReady ? 'Preparing game...' : '${(widget.progress * AppConstants.maxPercent100).toInt()}%',
                         style: AppTexts.b4,
                       ),
                     ],

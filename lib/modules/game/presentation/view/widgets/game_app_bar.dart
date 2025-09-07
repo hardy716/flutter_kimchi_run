@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../../core/theme/app/app_texts.dart';
+import '../../../../../core/theme/theme.dart';
 import '../../../../../gen/colors.gen.dart';
 
 class GameAppBar extends ConsumerWidget implements PreferredSizeWidget {
@@ -17,7 +17,7 @@ class GameAppBar extends ConsumerWidget implements PreferredSizeWidget {
       child: Container(
         height: kToolbarHeight,
         color: ColorName.skyBlue100,
-        padding: const EdgeInsets.symmetric(horizontal: 30),
+        padding: AppPaddings.appBarPadding,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: isShow

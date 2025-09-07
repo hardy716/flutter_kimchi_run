@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_kimchi_run/shared/shared.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../../core/theme/theme.dart';
 import '../../../../../core/constants/default_constants.dart';
-import '../../../../../core/theme/app/app_borders.dart';
-import '../../../../../core/theme/app/app_sizes.dart';
 import '../../../../../core/extensions/string_extension.dart';
 import '../../../../../gen/colors.gen.dart';
 import '../../../../../gen/assets.gen.dart';
-import '../../../../../core/theme/app/app_texts.dart';
+import '../../../../../shared/shared.dart';
 import '../../../domain/entity/ranking_user_entity.dart';
 import '../state/ranking_state_helper.dart';
 
@@ -19,7 +17,7 @@ class GameRankingSection extends ConsumerWidget with GetRankingState {
   Widget build(BuildContext context, WidgetRef ref) {
     return BackgroundScaffold(
       child: Padding(
-        padding: const EdgeInsets.only(left: 80, top: 10, right: 80, bottom: 30),
+        padding: AppPaddings.gameRankingSectionOuterPadding,
         child: Row(
           spacing: AppSpacing.w20,
           children: [
@@ -49,10 +47,10 @@ class GameRankingSection extends ConsumerWidget with GetRankingState {
     return Container(
       decoration: BoxDecoration(
         color: ColorName.darkBlue70,
-        borderRadius: AppBorderRadius.box,
+        borderRadius: AppBorderRadius.box10,
         border: Border.all(color: ColorName.black70),
       ),
-      padding: const EdgeInsets.symmetric(vertical: 20),
+      padding: AppPaddings.symmetricV20,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         spacing: AppSpacing.w20,
@@ -63,7 +61,7 @@ class GameRankingSection extends ConsumerWidget with GetRankingState {
             spacing: AppSpacing.h10,
             children: [
               Text(
-                (rankingUser?.nickname).orPlaceholder(placeHolder: DefaultConstants.dashPlaceholder),
+                (rankingUser?.nickname).orPlaceholder(DefaultConstants.dashPlaceholder),
                 style: AppTexts.b3.copyWith(color: ColorName.white100),
               ),
               RichText(
@@ -87,22 +85,22 @@ class GameRankingSection extends ConsumerWidget with GetRankingState {
 
   Widget _buildMyRankingSection({required int? ranking, required RankingUserEntity? rankingUser}) {
     return Container(
-      height: 50,
+      height: AppHeight.h50,
       decoration: BoxDecoration(
         color: ColorName.darkBlue70,
-        borderRadius: AppBorderRadius.box,
+        borderRadius: AppBorderRadius.box10,
         border: Border.all(color: ColorName.black70),
       ),
-      padding: const EdgeInsets.symmetric(horizontal: 30),
+      padding: AppPaddings.symmetricH30,
       child: Row(
         children: [
           Text(
-            ('$ranking').orPlaceholder(placeHolder: DefaultConstants.dashPlaceholder),
+            ('$ranking').orPlaceholder(DefaultConstants.dashPlaceholder),
             style: AppTexts.b3.copyWith(color: ColorName.yellowGold100),
           ),
           Expanded(
             child: Text(
-              (rankingUser?.nickname).orPlaceholder(placeHolder: DefaultConstants.dashPlaceholder),
+              (rankingUser?.nickname).orPlaceholder(DefaultConstants.dashPlaceholder),
               textAlign: TextAlign.center,
               style: AppTexts.b3.copyWith(color: ColorName.yellowGold100),
               overflow: TextOverflow.ellipsis,
@@ -122,7 +120,7 @@ class GameRankingSection extends ConsumerWidget with GetRankingState {
       child: Container(
         decoration: BoxDecoration(
           color: ColorName.darkBlue70,
-          borderRadius: const BorderRadius.all(Radius.circular(20)),
+          borderRadius: AppBorderRadius.box20,
           border: Border.all(color: ColorName.black70),
         ),
         child: ListView.separated(
@@ -131,7 +129,7 @@ class GameRankingSection extends ConsumerWidget with GetRankingState {
             final isMyRanking = index + 1 == ranking;
 
             return Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              padding: AppPaddings.symmetricH20V10,
               child: Row(
                 spacing: AppSpacing.w10,
                 children: [
@@ -142,7 +140,7 @@ class GameRankingSection extends ConsumerWidget with GetRankingState {
                   Expanded(
                     flex: 2,
                     child: Text(
-                      (top100RankingUsers[index].nickname).orPlaceholder(placeHolder: DefaultConstants.dashPlaceholder),
+                      (top100RankingUsers[index].nickname).orPlaceholder(DefaultConstants.dashPlaceholder),
                       textAlign: TextAlign.center,
                       style: AppTexts.b4.copyWith(color: isMyRanking ? ColorName.yellowGold100 : ColorName.white100),
                       overflow: TextOverflow.ellipsis,
@@ -156,7 +154,7 @@ class GameRankingSection extends ConsumerWidget with GetRankingState {
               ),
             );
           },
-          separatorBuilder: (context, index) => const Divider(color: Colors.white24, height: 0.5, thickness: 0.5),
+          separatorBuilder: (context, index) => const SeparatorDivider(),
         ),
       ),
     );

@@ -54,7 +54,7 @@ class _StyledTextFormFieldState extends State<StyledTextFormField> {
         cursorColor: ColorName.black100,
         controller: widget.controller,
         autofocus: false,
-        maxLength: AppConstants.maxLength,
+        maxLength: AppConstants.maxLength10,
         style: widget.textStyle.copyWith(color: ColorName.black100),
         obscureText: _showObscureText ? false : widget.obscureText,
         keyboardType: widget.keyboardType,
@@ -82,15 +82,15 @@ class _StyledTextFormFieldState extends State<StyledTextFormField> {
             icon: Icon(_showObscureText ? Icons.visibility : Icons.visibility_off, color: ColorName.black70),
           ),
           border: const OutlineInputBorder(
-            borderRadius: AppBorderRadius.box,
+            borderRadius: AppBorderRadius.box10,
             borderSide: BorderSide.none,
           ),
           focusedBorder: const OutlineInputBorder(
-            borderRadius: AppBorderRadius.box,
+            borderRadius: AppBorderRadius.box10,
             borderSide: BorderSide.none,
           ),
           errorBorder: const OutlineInputBorder(
-            borderRadius: AppBorderRadius.box,
+            borderRadius: AppBorderRadius.box10,
             borderSide: BorderSide(color: ColorName.red500),
           ),
           fillColor: ColorName.black70.withAlpha(AppConstants.hintTextAlpha),

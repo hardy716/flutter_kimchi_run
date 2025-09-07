@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../game/presentation/view/state/ranking_state_helper.dart';
+import '../../../../../core/constants/default_constants.dart';
+import '../../../../../core/extensions/string_extension.dart';
 import '../../../../../core/theme/theme.dart';
 import '../../../../../shared/shared.dart';
+import '../../../../game/presentation/view/state/ranking_state_helper.dart';
 import '../../view_model/auth_view_model.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
@@ -20,7 +22,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> with GetRankingState 
   void initState() {
     super.initState();
 
-      _nicknameTextEditingController = TextEditingController(text: readRankingNickname(ref) ?? '');
+      _nicknameTextEditingController = TextEditingController(text: readRankingNickname(ref).orPlaceholder(DefaultConstants.emptyPlaceholder));
   }
 
   @override

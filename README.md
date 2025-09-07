@@ -36,6 +36,7 @@ Flutter Kimchi Run은 Flutter와 Unity WebGL을 결합하여 개발된 모바일
 | <img alt="Image" src="https://github.com/user-attachments/assets/4f22c45d-2b86-4dab-b75e-8799c4b4046c" /> |
 
 게임 로딩 영상 링크 - [https://drive.google.com/file/d/1Lz_10MCNN78RyquFADnLGZ2KU3dOzrZD/view?usp=sharing](https://drive.google.com/file/d/1Lz_10MCNN78RyquFADnLGZ2KU3dOzrZD/view?usp=sharing)
+
 게임 플레이 영상 링크 - [https://drive.google.com/file/d/1WtJAUoJSE-hNY3ee1_EMritnKwe9U-Bm/view?usp=sharing](https://drive.google.com/file/d/1WtJAUoJSE-hNY3ee1_EMritnKwe9U-Bm/view?usp=sharing)
 
 
@@ -114,7 +115,7 @@ flutter_kimchi_run/
 #### 👥 제작자
 
 **Hardy** - 개발자
-- GitHub: [@hardy716](https://github.com/your-username)
+- GitHub: [@hardy716](https://github.com/hardy716)
 - Nomad Coders YouTube 튜토리얼 기반
 
 #### 🙏 감사의 말
