@@ -2,10 +2,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:easy_debounce/easy_debounce.dart';
 
-import '../../../../core/extensions/result_extension.dart';
-import '../../../../core/constants/debounce_constants.dart';
-import '../../../auth/presentation/view_model/auth_view_model.dart';
-import '../../domain/use_cases/ranking_use_case.dart';
+import '../../../../../core/extensions/result_extension.dart';
+import '../../../../../core/constants/debounce_constants.dart';
+import '../../../../auth/presentation/view_model/auth_view_model.dart';
+import '../../../domain/use_cases/ranking_use_case.dart';
 import '../state/ranking_state.dart';
 
 part 'ranking_view_model.g.dart';

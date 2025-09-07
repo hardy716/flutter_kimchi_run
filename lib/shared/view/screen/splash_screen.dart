@@ -31,7 +31,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with SingleTickerPr
 
     _dropController.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
-        context.go(AppRoute.login.path);
+        context.go(AppRoute.game.path);
       }
     });
 

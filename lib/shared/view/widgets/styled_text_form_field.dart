@@ -19,6 +19,7 @@ class StyledTextFormField extends StatefulWidget {
   final bool obscureText;
   final Widget? leading;
   final Function(String)? onSubmitted;
+  final bool isError;
 
   const StyledTextFormField({
     super.key,
@@ -35,6 +36,7 @@ class StyledTextFormField extends StatefulWidget {
     this.obscureText = false,
     this.leading,
     this.onSubmitted,
+    this.isError = false,
   });
 
   @override
@@ -65,6 +67,7 @@ class _StyledTextFormFieldState extends State<StyledTextFormField> {
         decoration: InputDecoration(
           hintText: widget.hintText,
           hintStyle: widget.hintStyle.copyWith(color: ColorName.black70.withAlpha(AppConstants.hintTextAlpha)),
+          errorText: widget.isError ? 'Duplicated' : null,
           errorStyle: widget.errorStyle.copyWith(color: ColorName.red500),
           counterStyle: widget.counterStyle,
           prefixIcon: widget.leading,

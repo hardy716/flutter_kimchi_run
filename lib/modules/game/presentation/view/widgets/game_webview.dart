@@ -5,7 +5,7 @@ import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../../core/constants/default_constants.dart';
-import '../../../../ranking/presentation/view_model/ranking_view_model.dart';
+import '../view_model/ranking_view_model.dart';
 import '../view_model/game_view_model.dart';
 import '../state/game_state.dart';
 

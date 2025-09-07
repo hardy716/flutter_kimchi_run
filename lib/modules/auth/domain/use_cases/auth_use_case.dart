@@ -1,11 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter_kimchi_run/modules/ranking/data/repositories/ranking_repository_impl.dart';
-import 'package:flutter_kimchi_run/modules/ranking/domain/repositories/ranking_repository.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../core/base/result.dart';
 import '../../../../core/extensions/result_extension.dart';
+import '../../../game/data/repositories/ranking_repository_impl.dart';
+import '../../../game/domain/repositories/ranking_repository.dart';
 import '../../data/repositories/auth_repository_impl.dart';
 import '../../data/repositories/nickname_repository_impl.dart';
 import '../repositories/auth_repository.dart';
@@ -17,12 +17,10 @@ part 'auth_use_case.g.dart';
 GetSignInAnonymouslyUseCase getSignInAnonymouslyUseCase(Ref ref) {
   final authRepository = ref.watch(authRepositoryProvider);
   final nicknameRepository = ref.watch(nicknameRepositoryProvider);
-  final rankingRepository = ref.watch(rankingRepositoryProvider);
 
   return GetSignInAnonymouslyUseCase(
     authRepository: authRepository,
     nicknameRepository: nicknameRepository,
-    rankingRepository: rankingRepository,
   );
 }
 
@@ -50,15 +48,12 @@ GetUpdateNicknameUseCase getUpdateNicknameUseCase(Ref ref) {
 class GetSignInAnonymouslyUseCase {
   final AuthRepository _authRepository;
   final NicknameRepository _nicknameRepository;
-  final RankingRepository _rankingRepository;
 
   GetSignInAnonymouslyUseCase({
     required AuthRepository authRepository,
     required NicknameRepository nicknameRepository,
-    required RankingRepository rankingRepository,
   }) : _authRepository = authRepository,
-       _nicknameRepository = nicknameRepository,
-       _rankingRepository = rankingRepository;
+       _nicknameRepository = nicknameRepository;
 
   Future<Result<UserCredential?, Exception>> signInAnonymously({String? nickname}) {
     return _authRepository.signInAnonymously().execute(
@@ -67,28 +62,23 @@ class GetSignInAnonymouslyUseCase {
         if (user == null) return Failure(Exception('no user'));
 
         final isNew = cred?.additionalUserInfo?.isNewUser == true;
-        final currentName = user.displayName ?? '';
-        // 신규이면 닉네임 필수, 기존이면 전달 안되면 현재 이름 유지
-        final desired = (nickname?.isNotEmpty == true) ? nickname! : currentName;
+        final displayName = user.displayName ?? '';
+        final currentNickname = (nickname?.isNotEmpty == true) ? nickname! : displayName;
 
-        if (isNew && desired.isEmpty) {
+        if (isNew && currentNickname.isEmpty) {
           return Failure(Exception('nickname required for new user'));
         }
 
-        // 닉네임이 바뀌는 경우에만 선 점검/갱신
-        final shouldChangeName = desired.isNotEmpty && desired != currentName;
+        final shouldChangeName = currentNickname.isNotEmpty && currentNickname != displayName;
         if (shouldChangeName) {
-          // 1) 중복 체크 (또는 updateNickname 내부에서 create()로 원자 보장)
-          final checkDuplicateNickname = await _nicknameRepository.checkDuplicateNickname(nickname: desired);
+          final checkDuplicateNickname = await _nicknameRepository.checkDuplicateNickname(nickname: currentNickname);
           if (checkDuplicateNickname.isFailure) return Failure(Exception('duplicate nickname'));
 
-          // 2) 닉네임 예약/업데이트 (nicknames/{name} + FirebaseAuth displayName)
-          final updateNickname = await _nicknameRepository.updateNickname(nickname: desired);
+          final updateNickname = await _nicknameRepository.updateNickname(nickname: currentNickname);
           if (updateNickname.isFailure) return Failure(Exception('failed to update nickname'));
         }
 
-        // 3) 유저/랭킹 문서 보장 (항상 1회만 호출)
-        final ensured = await _authRepository.registerUser(desired);
+        final ensured = await _authRepository.registerUser(currentNickname);
         if (ensured.isFailure) return Failure(Exception('failed to ensure user docs'));
 
         return Success(cred);

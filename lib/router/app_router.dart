@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart' show GlobalKey, NavigatorState, ValueNotifier;
-import 'package:flutter_kimchi_run/modules/ranking/presentation/view_model/ranking_view_model.dart';
 
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../modules/game/presentation/view/view_model/ranking_view_model.dart';
 import '../modules/auth/presentation/view_model/auth_view_model.dart';
 import '../modules/auth/presentation/state/auth_state.dart';
 import 'route_page_builder.dart';
@@ -40,9 +40,6 @@ GoRouter appRouter(Ref ref) {
       final isLoginRoute = state.uri.path == AppRoute.login.path;
       final isAuthenticated = authState is AuthSuccess;
 
-      print('isLoginRoute => $isLoginRoute');
-      print('isAuthenticated => $isAuthenticated');
-
       if (isLoginRoute && isAuthenticated) {
         return AppRoute.game.path;
       }
@@ -57,7 +54,6 @@ GoRouter appRouter(Ref ref) {
       GoRoute(path: AppRoute.splash.path, name: AppRoute.splash.name, pageBuilder: AppRoute.splash.builder),
       GoRoute(path: AppRoute.login.path, name: AppRoute.login.name, pageBuilder: AppRoute.login.builder),
       GoRoute(path: AppRoute.game.path, name: AppRoute.game.name, pageBuilder: AppRoute.game.builder),
-      GoRoute(path: AppRoute.ranking.path, name: AppRoute.ranking.name, pageBuilder: AppRoute.ranking.builder),
       GoRoute(path: AppRoute.error.path, name: AppRoute.error.name, pageBuilder: AppRoute.error.builder),
     ],
     errorPageBuilder: AppRoute.error.builder,

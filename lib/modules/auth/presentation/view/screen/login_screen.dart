@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../ranking/presentation/state/ranking_state_helper.dart';
+import '../../../../game/presentation/view/state/ranking_state_helper.dart';
 import '../../../../../core/theme/theme.dart';
 import '../../../../../shared/shared.dart';
 import '../../view_model/auth_view_model.dart';

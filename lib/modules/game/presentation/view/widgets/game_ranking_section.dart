@@ -9,8 +9,8 @@ import '../../../../../core/extensions/string_extension.dart';
 import '../../../../../gen/colors.gen.dart';
 import '../../../../../gen/assets.gen.dart';
 import '../../../../../core/theme/app/app_texts.dart';
-import '../../../../ranking/domain/entity/ranking_user_entity.dart';
-import '../../../../ranking/presentation/state/ranking_state_helper.dart';
+import '../../../domain/entity/ranking_user_entity.dart';
+import '../state/ranking_state_helper.dart';
 
 class GameRankingSection extends ConsumerWidget with GetRankingState {
   const GameRankingSection({super.key});

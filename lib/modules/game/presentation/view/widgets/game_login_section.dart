@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_kimchi_run/modules/game/presentation/view/view_model/game_view_model.dart';
-import 'package:flutter_kimchi_run/modules/ranking/presentation/view_model/ranking_view_model.dart';
-import 'package:flutter_kimchi_run/shared/shared.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../../shared/shared.dart';
 import '../../../../../core/theme/app/app_paddings.dart';
-import '../../../../../shared/view/widgets/action_text_button.dart';
-import '../../../../../shared/view/widgets/styled_text_form_field.dart';
-import '../../../../ranking/presentation/state/ranking_state_helper.dart';
 import '../../../../auth/presentation/view_model/auth_view_model.dart';
+import '../state/ranking_state_helper.dart';
+import '../view_model/ranking_view_model.dart';
+import '../view_model/game_view_model.dart';
 
 class GameLoginSection extends ConsumerStatefulWidget {
   const GameLoginSection({super.key});
@@ -19,6 +17,7 @@ class GameLoginSection extends ConsumerStatefulWidget {
 
 class _GameLoginSectionState extends ConsumerState<GameLoginSection> with GetRankingState {
   late final TextEditingController _nicknameTextEditingController;
+  bool isError = false;
 
   @override
   void initState() {
@@ -51,13 +50,18 @@ class _GameLoginSectionState extends ConsumerState<GameLoginSection> with GetRan
                   keyboardType: TextInputType.text,
                   controller: _nicknameTextEditingController,
                   onSubmitted: (value) => ref.auth.signInAnonymously(nickname: value),
+                  isError: isError,
                 ),
                 const Spacer(),
                 ActionTextButton(
                   text: 'ENTER',
-                  onTap: () {
-                    ref.ranking.updateNickname(nickname: _nicknameTextEditingController.text);
-                    ref.game.updateLoginShow(false);
+                  onTap: () async {
+                    final updateNickname = await ref.ranking.updateNickname(nickname: _nicknameTextEditingController.text);
+                    if (updateNickname) ref.game.updateLoginShow(false);
+
+                    setState(() {
+                      isError = !updateNickname;
+                    });
                   },
                 ),
                 const Spacer(),

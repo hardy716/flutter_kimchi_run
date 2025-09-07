@@ -1,7 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../domain/entity/ranking_user_entity.dart';
-import '../../domain/entity/user_entity.dart';
+import '../../../domain/entity/ranking_user_entity.dart';
 import '../view_model/ranking_view_model.dart';
 import 'ranking_state.dart';
 
