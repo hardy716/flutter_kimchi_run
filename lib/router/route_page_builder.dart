@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 
 import 'package:go_router/go_router.dart';
 
+import '../modules/auth/presentation/view/screen/login_screen.dart';
+import '../modules/game/presentation/view/screen/game_screen.dart';
 import '../shared/shared.dart' show SplashScreen, ErrorScreen;
-import '../modules/auth/auth.dart' show LoginScreen;
-import '../modules/game/game.dart' show GameScreen;
 import 'route_paths.dart';
 
 final Map<AppRoute, Page<dynamic> Function(BuildContext, GoRouterState)> routeBuilders = {
